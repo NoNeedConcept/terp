@@ -119,3 +119,16 @@ namespace Terp.Resilience
         public System.TimeSpan DelayWithJitter(int attempt) { }
     }
 }
+namespace Terp.Threading
+{
+    public sealed class AsyncLock : System.IDisposable
+    {
+        public AsyncLock() { }
+        public System.Threading.Tasks.ValueTask<Terp.Threading.AsyncLockScope> AcquireAsync(System.Threading.CancellationToken cancellationToken = default) { }
+        public void Dispose() { }
+    }
+    public readonly struct AsyncLockScope : System.IDisposable
+    {
+        public void Dispose() { }
+    }
+}
