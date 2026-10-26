@@ -10,7 +10,7 @@ namespace Terp.Diagnostics;
 /// <remarks>
 /// <para>
 /// Every measurement carries the tag <c>outcome</c> with the value <c>success</c>, or <c>failure</c> after
-/// <see cref="Fail"/> was called (the same values as <see cref="JobMetrics"/>). The tag is always present so dashboards can group and filter on it without
+/// <see cref="Fail"/> was called. The tag is always present so dashboards can group and filter on it without
 /// handling a missing label.
 /// </para>
 /// <para>

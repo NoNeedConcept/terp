@@ -1,11 +1,11 @@
 ---
 title: Diagnostics
-description: Timers, job metrics and an HTTP client handler built on System.Diagnostics.Metrics.
+description: Timers, async timing extensions and an HTTP client handler built on System.Diagnostics.Metrics.
 ---
 
 # Diagnostics
 
-`Terp.Diagnostics` (package `Terp`) has three small helpers on top of `System.Diagnostics.Metrics`: `TimerScope`, `JobMetrics` with `JobRun`, and `TerpHttpMetricsHandler`.
+`Terp.Diagnostics` (package `Terp`) has helpers on top of `System.Diagnostics.Metrics`: `TimerScope` for scoped timing, `TimeAsync` for one-call async timing, and `TerpHttpMetricsHandler` for tagging outbound HTTP metrics.
 
 ```csharp
 using System.Diagnostics.Metrics;
@@ -18,12 +18,27 @@ None of them creates a meter. You pass your own `Meter` and export it yourself.
 With OpenTelemetry, register the meter by name: `AddMeter("MyApp")`. An instrument on a meter nobody listens to costs close to nothing.
 :::
 
-## Time a block with TimerScope
+## Time an async operation with TimeAsync
 
-`StartTimer` is an extension on `Histogram<double>`. It returns a `TimerScope`. When the scope is disposed it records the elapsed time in seconds on the histogram.
+`TimeAsync` is the simplest way to measure duration. It executes a delegate, records the elapsed time in seconds, and adds `outcome=success` or `outcome=failure`.
 
 ```csharp
 var meter = new Meter("MyApp");
+var duration = meter.CreateHistogram<double>("myapp.search.duration", "s");
+
+var result = await duration.TimeAsync(
+    async ct => await SearchAsync(ct),
+    new TagList { { "source", "tmdb" } },
+    cancellationToken);
+```
+
+On exception, `outcome=failure` is recorded and the exception is rethrown. There is a `Task<T>` overload that returns the result and a `Task` overload for void operations.
+
+## Time a block with TimerScope
+
+When you need manual control (e.g. timing across message boundaries in an actor), use `StartTimer`. It returns a `TimerScope` struct. The scope records elapsed seconds on dispose.
+
+```csharp
 var latency = meter.CreateHistogram<double>("myapp.lookup.duration", "s");
 
 using (var timer = latency.StartTimer(new KeyValuePair<string, object?>("source", "cache")))
@@ -33,58 +48,31 @@ using (var timer = latency.StartTimer(new KeyValuePair<string, object?>("source"
 }
 ```
 
-Every measurement carries the tag `outcome`: `success`, or `failure` after you called `Fail()`. The tag is always present, so dashboards can group on it. Your own tags come before it.
+Every measurement carries `outcome`: `success`, or `failure` after `Fail()`. The tag is always present so dashboards can group on it.
 
-The overloads take no tag, one tag, two tags or a `ReadOnlySpan<KeyValuePair<string, object?>>`. Each has an optional `TimeProvider` as the last parameter, which you can replace in tests.
+The overloads take no tag, one tag, two tags or a `ReadOnlySpan<KeyValuePair<string, object?>>`. Each has an optional `TimeProvider` as the last parameter for testing.
 
 ::: warning Pass tags as explicit pairs
 Write `new KeyValuePair<string, object?>("source", "cache")`. A target-typed `new("source", "cache")` is ambiguous with the `TimeProvider` overload.
 :::
 
-`TimerScope` is a mutable struct, so it does not allocate. Use it directly in a `using` statement or declaration. Do not copy it or box it: a copy that is disposed too records a second measurement. Disposing the same variable twice records once.
-
-## Track a recurring job with JobMetrics
-
-`JobMetrics.Create(meter, name)` creates three instruments from one name. Use one `JobMetrics` per job and call `Start()` for each run.
-
-```csharp
-var search = JobMetrics.Create(meter, "myapp.search");
-
-using (var run = search.Start())
-{
-    try { await SearchAsync(); run.Succeed(); }
-    catch (Exception ex) { run.Fail(ex); }
-}
-```
-
-| Instrument | Type | Unit | Tags |
-|------------|------|------|------|
-| `{name}.runs` | `Counter<long>` | `{run}` | your tags, `outcome`, `error.type` on failure |
-| `{name}.duration` | `Histogram<double>` | `s` | your tags, `outcome`, `error.type` on failure |
-| `{name}.last_success_timestamp` | `Gauge<double>` | `s` | your tags only |
-
-The gauge holds the Unix time in seconds of the last successful run. It has no `outcome` tag. `name` must not be blank. `Start` has the same tag overloads as `StartTimer`.
-
-`outcome` is `success` or `failure`. `error.type` is the full type name of the exception passed to `Fail(exception)`, or `unknown` when you call `Fail()` without one.
-
-A run reports exactly once; the first result wins, also across threads. A `JobRun` that is disposed without `Succeed` or `Fail` counts as a failure with `error.type=abandoned`. An early `return` or a cancellation therefore never makes a run disappear from the counts.
-
-::: info Missing series after restart
-The gauge has no value until the first success in the process. An alert on `time() - ..._last_success_timestamp_seconds` must handle a missing series after a restart.
-:::
-
-With the OpenTelemetry Prometheus exporter, `myapp.search` appears as `myapp_search_runs_total`, `myapp_search_duration_seconds_*` and `myapp_search_last_success_timestamp_seconds`. `StartTimer` on `myapp.lookup.duration` appears as `myapp_lookup_duration_seconds_*` with the `outcome` label.
+`TimerScope` is a mutable struct (zero allocation). Use it directly in a `using` statement. Do not copy or box it.
 
 ## Tag the HTTP client metrics
 
-.NET records `http.client.request.duration` on the meter `System.Net.Http` for every `HttpClient` request. `TerpHttpMetricsHandler` adds the custom tag `api` (constant `TerpHttpMetricsHandler.TagName`) to those measurements, so you can tell clients apart.
+.NET records `http.client.request.duration` on the meter `System.Net.Http` for every `HttpClient` request. `TerpHttpMetricsHandler` adds two custom tags to those measurements:
+
+| Tag | Value | Example |
+|-----|-------|---------|
+| `api` | The name passed to the constructor | `tmdb` |
+| `status_class` | The HTTP status code class, or `error` on failure | `2xx`, `4xx`, `error` |
 
 ```csharp
 services.AddHttpClient("tmdb")
     .AddHttpMessageHandler(() => new TerpHttpMetricsHandler("tmdb"));
 ```
 
-The constructor takes the value for the tag and throws for a blank name. The handler uses the enrichment callback of the BCL, so the measurement keeps all built-in tags such as `http.response.status_code` and `error.type`, and gains `api`.
+The constants `TerpHttpMetricsHandler.ApiTagName` and `TerpHttpMetricsHandler.StatusClassTagName` hold the tag names.
 
 Add the meter `System.Net.Http` to your exporter:
 
@@ -112,9 +100,5 @@ listener.InstrumentPublished = (instrument, l) =>
 };
 listener.SetMeasurementEventCallback<double>((instrument, value, tags, _) =>
     Console.WriteLine($"{instrument.Name} = {value:F3}"));
-listener.SetMeasurementEventCallback<long>((instrument, value, tags, _) =>
-    Console.WriteLine($"{instrument.Name} += {value}"));
 listener.Start();
 ```
-
-The `Gauge<double>` of `JobMetrics` is reported through the `double` callback as well.

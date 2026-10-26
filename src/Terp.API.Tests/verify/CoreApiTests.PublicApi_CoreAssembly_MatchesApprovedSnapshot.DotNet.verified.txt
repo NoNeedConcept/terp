@@ -27,25 +27,6 @@ namespace Terp.Diagnostics
         public static System.Threading.Tasks.Task TimeAsync(this System.Diagnostics.Metrics.Histogram<double> histogram, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task> action, System.Diagnostics.TagList tags = default, System.Threading.CancellationToken cancellationToken = default, System.TimeProvider? timeProvider = null) { }
         public static System.Threading.Tasks.Task<T> TimeAsync<T>(this System.Diagnostics.Metrics.Histogram<double> histogram, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<T>> action, System.Diagnostics.TagList tags = default, System.Threading.CancellationToken cancellationToken = default, System.TimeProvider? timeProvider = null) { }
     }
-    public sealed class JobMetrics
-    {
-        public Terp.Diagnostics.JobRun Start() { }
-        public Terp.Diagnostics.JobRun Start(System.Collections.Generic.KeyValuePair<string, object?> tag) { }
-        public Terp.Diagnostics.JobRun Start(System.ReadOnlySpan<System.Collections.Generic.KeyValuePair<string, object?>> tags) { }
-        public Terp.Diagnostics.JobRun Start(System.Collections.Generic.KeyValuePair<string, object?> tag1, System.Collections.Generic.KeyValuePair<string, object?> tag2) { }
-        public static Terp.Diagnostics.JobMetrics Create(System.Diagnostics.Metrics.Meter meter, string name, System.TimeProvider? timeProvider = null) { }
-    }
-    public static class JobMetricsExtensions
-    {
-        public static System.Threading.Tasks.Task RunAsync(this Terp.Diagnostics.JobMetrics job, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task> action, System.Diagnostics.TagList tags = default, System.Threading.CancellationToken cancellationToken = default) { }
-        public static System.Threading.Tasks.Task<T> RunAsync<T>(this Terp.Diagnostics.JobMetrics job, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<T>> action, System.Diagnostics.TagList tags = default, System.Threading.CancellationToken cancellationToken = default) { }
-    }
-    public sealed class JobRun : System.IDisposable
-    {
-        public void Dispose() { }
-        public void Fail(System.Exception? exception = null) { }
-        public void Succeed() { }
-    }
     public sealed class TerpHttpMetricsHandler : System.Net.Http.DelegatingHandler
     {
         public const string ApiTagName = "api";

@@ -19,19 +19,11 @@ for (var step = 1; step <= 2; step++)
     }
 }
 
-Console.WriteLine("JobMetrics: one run counts as succeeded, one as failed");
-var job = JobMetrics.Create(meter, "demo.job");
-using (var run = job.Start())
-{
-    run.Succeed();
-}
+Console.WriteLine("TimeAsync: times an async operation into a histogram with outcome tag");
+var asyncDuration = meter.CreateHistogram<double>("demo.async.duration", "s");
+await asyncDuration.TimeAsync(async ct => await Task.Delay(50, ct), cancellationToken: CancellationToken.None);
 
-using (var run = job.Start())
-{
-    run.Fail(new InvalidOperationException("simulated failure"));
-}
-
-Console.WriteLine("PortFinder + TerpHttpMetricsHandler: the BCL HttpClient metric gets the tag api=demo");
+Console.WriteLine("PortFinder + TerpHttpMetricsHandler: the BCL HttpClient metric gets the tags api=demo, status_class=2xx");
 var port = PortFinder.FindFreeLocalPort();
 var prefix = $"http://localhost:{port}/";
 using var server = new HttpListener();

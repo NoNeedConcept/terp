@@ -18,7 +18,7 @@ src/
   Terp.Example/ Terp.Hosting.Example/ Terp.Akka.Example/  # Runnable demo apps (IsPackable=false, not shipped); Terp.Hosting.Example requires Native AOT (PublishAot)
 ```
 
-Namespaces: `Terp` has `Terp.Diagnostics` (metrics helpers: `TimerScope`, `JobMetrics`/`JobRun`, `TerpHttpMetricsHandler`), `Terp.Resilience`, `Terp.Network`,
+Namespaces: `Terp` has `Terp.Diagnostics` (metrics helpers: `TimerScope`, `TimeAsync`/`HistogramTimerExtensions`, `TerpHttpMetricsHandler`), `Terp.Resilience`, `Terp.Network`,
 `Terp.Threading` (`AsyncLock`, `AsyncLockScope`),
 `Terp.Hosting` (`ISetup`, `ISetup<T>`, `SetupContext`, `SetupExtensions`, `ApplicationSetupExtensions`) and `Terp.Hosting.Gates` (`IStartupGate`, `AddStartupGate`).
 A typical host needs `using Terp.Hosting;` plus `Terp.Hosting.Gates` at most.
