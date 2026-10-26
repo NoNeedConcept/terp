@@ -6,8 +6,8 @@ import { glob } from 'glob'
 import { parseStringPromise } from 'xml2js'
 
 const XML_PATHS = [
-  '../src/Terp/bin/Release/*/Terp.xml',
-  '../src/Terp.Akka/bin/Release/*/Terp.Akka.xml'
+  '../src/Terp/bin/*/*/Terp.xml',
+  '../src/Terp.Akka/bin/*/*/Terp.Akka.xml'
 ]
 const OUTPUT_DIR = 'api'
 const EXCLUDED_NAMESPACES = ['System', 'Microsoft', 'Internal']
@@ -190,7 +190,7 @@ function markdownOf(node) {
 async function loadMembers() {
   const files = await glob(XML_PATHS, { cwd: DOCS_ROOT, absolute: true, windowsPathsNoEscape: true })
   if (files.length === 0) {
-    throw new Error(`No XML documentation files found for: ${XML_PATHS.join(', ')}. Run "dotnet build -c Release src/Terp.slnx" first.`)
+    throw new Error(`No XML documentation files found for: ${XML_PATHS.join(', ')}. Run "dotnet build src/Terp.slnx" first.`)
   }
   const members = []
   for (const file of files) {
