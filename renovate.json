@@ -15,6 +15,11 @@
       "description": "Verify 33+ requires a sponsorship/maintenance fee (SponsorCheck SC021) -- stay on 32.x until decided",
       "matchPackageNames": ["Verify.XunitV3"],
       "allowedVersions": "<33"
+    },
+    {
+      "description": "Verify.DiffPlex 3.4.0 is deprecated (diff built into Verify 33+) but we need it on 32.x -- stay on 3.3.x",
+      "matchPackageNames": ["Verify.DiffPlex"],
+      "allowedVersions": "<3.4.0"
     }
   ]
 }
