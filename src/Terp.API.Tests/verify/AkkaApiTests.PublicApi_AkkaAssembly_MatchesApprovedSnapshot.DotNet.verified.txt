@@ -1,0 +1,93 @@
+﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Terp.Akka.Tests")]
+[assembly: System.Runtime.Versioning.TargetFramework(".NETCoreApp,Version=v10.0", FrameworkDisplayName=".NET 10.0")]
+namespace Terp.Akka
+{
+    public abstract class ActorSystemSetup : Terp.Hosting.ISetup, Terp.Hosting.ISetup<Microsoft.Extensions.DependencyInjection.IServiceCollection>
+    {
+        protected ActorSystemSetup() { }
+        protected abstract string ActorSystemName { get; }
+        protected abstract void BuildSystem(Akka.Hosting.AkkaConfigurationBuilder builder, System.IServiceProvider serviceProvider);
+        public void Setup(Microsoft.Extensions.DependencyInjection.IServiceCollection services, Terp.Hosting.SetupContext context) { }
+    }
+    public static class AkkaOptionsExtensions
+    {
+        public static void Match<T>(this Akka.Util.Option<T> option, System.Action<T> some, System.Action none) { }
+        public static TOut Match<TIn, TOut>(this Akka.Util.Option<TIn> option, System.Func<TIn, TOut> some, System.Func<TOut> none) { }
+    }
+    public static class BackoffExtensions
+    {
+        public static Akka.Actor.Props BackoffOnFailure(this Akka.Actor.Props childProps, string childName, System.TimeSpan? minBackoff = default, System.TimeSpan? maxBackoff = default, double randomFactor = 0.2, System.Func<Akka.Pattern.BackoffOptions, Akka.Pattern.BackoffOptions>? configure = null) { }
+        public static Akka.Actor.Props BackoffOnStop(this Akka.Actor.Props childProps, string childName, System.TimeSpan? minBackoff = default, System.TimeSpan? maxBackoff = default, double randomFactor = 0.2, System.Func<Akka.Pattern.BackoffOptions, Akka.Pattern.BackoffOptions>? configure = null) { }
+    }
+    public static class ContextExtensions
+    {
+        public static bool ChildForward(this Akka.Actor.IActorContext context, string name, object message) { }
+        public static bool ChildTell(this Akka.Actor.IActorContext context, string name, object message) { }
+        public static Akka.Util.Option<Akka.Actor.IActorRef> GetChild(this Akka.Actor.IActorContext context, string name) { }
+    }
+    public sealed class EntityIdExtractor : Akka.Cluster.Sharding.HashCodeMessageExtractor
+    {
+        public EntityIdExtractor(int maxNumberOfShards) { }
+        public static Terp.Akka.EntityIdExtractor Instance { get; }
+        public override string? EntityId(object message) { }
+    }
+    public sealed class EntityRegionActor : Akka.Actor.ReceiveActor, Akka.Actor.IWithTimers
+    {
+        public EntityRegionActor(System.Func<Akka.Actor.IActorContext, string, Akka.Actor.IActorRef> entityFactory, Akka.Cluster.Sharding.IMessageExtractor extractor, Terp.Akka.EntityRegionOptions options, string regionTag, System.TimeProvider? timeProvider = null) { }
+        public Akka.Actor.ITimerScheduler Timers { get; set; }
+        protected override void PreStart() { }
+    }
+    public static class EntityRegionExtensions
+    {
+        public static Akka.Hosting.AkkaConfigurationBuilder WithEntityRegion<TKey>(this Akka.Hosting.AkkaConfigurationBuilder builder, System.Func<Akka.DependencyInjection.IDependencyResolver, Akka.Actor.Props> entityPropsFactory, System.Action<Terp.Akka.EntityRegionOptions>? configure = null, Akka.Cluster.Sharding.IMessageExtractor? extractor = null) { }
+    }
+    public sealed class EntityRegionOptions : System.IEquatable<Terp.Akka.EntityRegionOptions>
+    {
+        public EntityRegionOptions() { }
+        public int MaxBufferedMessagesPerEntity { get; init; }
+        public int MaxEntities { get; init; }
+        public int MaxRestarts { get; init; }
+        public System.TimeSpan PassivationInterval { get; init; }
+        public System.TimeSpan PassivationTimeout { get; init; }
+        public System.TimeSpan RestartWindow { get; init; }
+    }
+    public interface IWithEntityId
+    {
+        string EntityId { get; }
+    }
+    public static class RegistryExtensions
+    {
+        public static Akka.Actor.IActorRef GetActor<T>(this Akka.Actor.ActorSystem system) { }
+        public static Akka.Actor.IActorRef GetActor<T>(this Akka.Actor.IActorContext context) { }
+        public static System.Threading.Tasks.Task<Akka.Actor.IActorRef> GetActorAsync<T>(this Akka.Actor.ActorSystem system) { }
+        public static System.Threading.Tasks.Task<Akka.Actor.IActorRef> GetActorAsync<T>(this Akka.Actor.IActorContext context) { }
+        public static Akka.Hosting.IReadOnlyActorRegistry GetRegistry(this Akka.Actor.ActorSystem system) { }
+        public static bool TryGetActor(this Akka.Actor.ActorSystem system, System.Type key, out Akka.Actor.IActorRef actor) { }
+        public static bool TryGetActor(this Akka.Actor.IActorContext context, System.Type key, out Akka.Actor.IActorRef actor) { }
+        public static bool TryGetActor<T>(this Akka.Actor.ActorSystem system, out Akka.Actor.IActorRef actor) { }
+        public static bool TryGetActor<T>(this Akka.Actor.IActorContext context, out Akka.Actor.IActorRef actor) { }
+    }
+    public static class ResolveExtensions
+    {
+        public static Akka.Actor.IActorRef ResolveActor<TActor>(this Akka.Actor.ActorSystem system, params object[] args)
+            where TActor : Akka.Actor.ActorBase { }
+        public static Akka.Actor.IActorRef ResolveActor<TActor>(this Akka.Actor.IActorContext context, params object[] args)
+            where TActor : Akka.Actor.ActorBase { }
+        public static Akka.Actor.IActorRef ResolveActor<TActor>(this Akka.Actor.ActorSystem system, System.Func<Akka.Actor.Props, Akka.Actor.Props> configure, params object[] args)
+            where TActor : Akka.Actor.ActorBase { }
+        public static Akka.Actor.IActorRef ResolveActor<TActor>(this Akka.Actor.ActorSystem system, string? name, params object[] args)
+            where TActor : Akka.Actor.ActorBase { }
+        public static Akka.Actor.IActorRef ResolveActor<TActor>(this Akka.Actor.IActorContext context, string? name, params object[] args)
+            where TActor : Akka.Actor.ActorBase { }
+        public static Akka.Actor.IActorRef ResolveActor<TActor>(this Akka.Actor.ActorSystem system, string? name, System.Func<Akka.Actor.Props, Akka.Actor.Props> configure, params object[] args)
+            where TActor : Akka.Actor.ActorBase { }
+        public static Akka.Actor.IActorRef ResolveChildActor<TActor>(this Akka.Actor.IActorContext context, params object[] args)
+            where TActor : Akka.Actor.ActorBase { }
+        public static Akka.Actor.IActorRef ResolveChildActor<TActor>(this Akka.Actor.IActorContext context, System.Func<Akka.Actor.Props, Akka.Actor.Props> configure, params object[] args)
+            where TActor : Akka.Actor.ActorBase { }
+        public static Akka.Actor.IActorRef ResolveChildActor<TActor>(this Akka.Actor.IActorContext context, string? name, params object[] args)
+            where TActor : Akka.Actor.ActorBase { }
+        public static Akka.Actor.IActorRef ResolveChildActor<TActor>(this Akka.Actor.IActorContext context, string? name, System.Func<Akka.Actor.Props, Akka.Actor.Props> configure, params object[] args)
+            where TActor : Akka.Actor.ActorBase { }
+    }
+}

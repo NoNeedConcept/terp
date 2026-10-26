@@ -1,0 +1,23 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <!--- Library dependencies: minimum versions, so consumers are not forced to update.
+         NU1903/NU1904: Akka.Remote CVE (GHSA-jhpv-4q4f-43g5) is remote-deserialization only,
+         not exploitable in local use, and unpatched in the 1.5.x line. Consumers using cluster
+         mode resolve to a higher version via their own Akka.Cluster.Hosting pin. -->
+    <PackageVersion Include="Akka.Cluster.Sharding" Version="[1.5.0,)" />
+    <PackageVersion Include="Akka.Hosting" Version="[1.5.0,)" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="[10.0.0,)" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="[10.0.0,)" />
+    <!--- Testing and examples -->
+    <PackageVersion Include="Akka.Hosting.TestKit" Version="1.5.73" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.5" />
+    <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.11.2" />
+    <PackageVersion Include="PublicApiGenerator" Version="11.5.4" />
+    <PackageVersion Include="Verify.DiffPlex" Version="3.3.1" />
+    <PackageVersion Include="Verify.XunitV3" Version="32.0.1" />
+    <PackageVersion Include="xunit.v3.mtp-v2" Version="4.0.1" />
+  </ItemGroup>
+</Project>

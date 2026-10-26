@@ -1,0 +1,123 @@
+﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Terp.Tests")]
+[assembly: System.Runtime.Versioning.TargetFramework(".NETCoreApp,Version=v10.0", FrameworkDisplayName=".NET 10.0")]
+namespace Terp
+{
+    public static class DateTimeExtensions
+    {
+        public static bool IsBetween(this System.DateTime dateTime, System.DateTime lowerBound, System.DateTime upperBound) { }
+        public static bool IsInFuture(this System.DateTime dateTime, System.TimeProvider? timeProvider = null) { }
+        public static bool IsPast(this System.DateTime dateTime, System.TimeProvider? timeProvider = null) { }
+        public static bool IsToday(this System.DateTime dateTime, System.TimeProvider? timeProvider = null) { }
+        public static bool IsWeekend(this System.DateTime dateTime) { }
+        public static bool IsWorkday(this System.DateTime dateTime) { }
+    }
+    public interface IWithId
+    {
+        System.Guid Id { get; }
+    }
+}
+namespace Terp.Diagnostics
+{
+    public static class HistogramTimerExtensions
+    {
+        public static Terp.Diagnostics.TimerScope StartTimer(this System.Diagnostics.Metrics.Histogram<double> histogram, System.TimeProvider? timeProvider = null) { }
+        public static Terp.Diagnostics.TimerScope StartTimer(this System.Diagnostics.Metrics.Histogram<double> histogram, System.Collections.Generic.KeyValuePair<string, object?> tag, System.TimeProvider? timeProvider = null) { }
+        public static Terp.Diagnostics.TimerScope StartTimer(this System.Diagnostics.Metrics.Histogram<double> histogram, System.ReadOnlySpan<System.Collections.Generic.KeyValuePair<string, object?>> tags, System.TimeProvider? timeProvider = null) { }
+        public static Terp.Diagnostics.TimerScope StartTimer(this System.Diagnostics.Metrics.Histogram<double> histogram, System.Collections.Generic.KeyValuePair<string, object?> tag1, System.Collections.Generic.KeyValuePair<string, object?> tag2, System.TimeProvider? timeProvider = null) { }
+        public static System.Threading.Tasks.Task TimeAsync(this System.Diagnostics.Metrics.Histogram<double> histogram, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task> action, System.Diagnostics.TagList tags = default, System.TimeProvider? timeProvider = null, System.Threading.CancellationToken cancellationToken = default) { }
+        public static System.Threading.Tasks.Task<T> TimeAsync<T>(this System.Diagnostics.Metrics.Histogram<double> histogram, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<T>> action, System.Diagnostics.TagList tags = default, System.TimeProvider? timeProvider = null, System.Threading.CancellationToken cancellationToken = default) { }
+    }
+    public sealed class TerpHttpMetricsHandler : System.Net.Http.DelegatingHandler
+    {
+        public const string ApiTagName = "api";
+        public const string StatusClassTagName = "status_class";
+        public TerpHttpMetricsHandler(string apiName) { }
+        protected override System.Net.Http.HttpResponseMessage Send(System.Net.Http.HttpRequestMessage request, System.Threading.CancellationToken cancellationToken) { }
+        protected override System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage> SendAsync(System.Net.Http.HttpRequestMessage request, System.Threading.CancellationToken cancellationToken) { }
+    }
+    public struct TimerScope : System.IDisposable
+    {
+        public void Dispose() { }
+        public void Fail() { }
+    }
+}
+namespace Terp.Hosting
+{
+    public static class ApplicationSetupExtensions
+    {
+        public static Microsoft.Extensions.Hosting.IHost Setup<TSetup>(this Microsoft.Extensions.Hosting.IHost app)
+            where TSetup : Terp.Hosting.ISetup, new () { }
+        public static TApplication Setup<TApplication>(this TApplication app, Terp.Hosting.ISetup setup)
+            where TApplication : Microsoft.Extensions.Hosting.IHost { }
+        public static TApplication Setup<TApplication, TSetup>(this TApplication app)
+            where TApplication : Microsoft.Extensions.Hosting.IHost
+            where TSetup : Terp.Hosting.ISetup, new () { }
+    }
+    public interface ISetup { }
+    public interface ISetup<in TTarget> : Terp.Hosting.ISetup
+    {
+        void Setup(TTarget target, Terp.Hosting.SetupContext context);
+    }
+    public sealed class SetupContext
+    {
+        public SetupContext(Microsoft.Extensions.Configuration.IConfiguration configuration, Microsoft.Extensions.Hosting.IHostEnvironment environment) { }
+        public Microsoft.Extensions.Configuration.IConfiguration Configuration { get; }
+        public Microsoft.Extensions.Hosting.IHostEnvironment Environment { get; }
+    }
+    public static class SetupExtensions
+    {
+        public static Microsoft.Extensions.Hosting.IHostApplicationBuilder Setup<TSetup>(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder)
+            where TSetup : Terp.Hosting.ISetup, new () { }
+        public static TBuilder Setup<TBuilder>(this TBuilder builder, Terp.Hosting.ISetup setup)
+            where TBuilder : Microsoft.Extensions.Hosting.IHostApplicationBuilder { }
+        public static TBuilder Setup<TBuilder, TSetup>(this TBuilder builder)
+            where TBuilder : Microsoft.Extensions.Hosting.IHostApplicationBuilder
+            where TSetup : Terp.Hosting.ISetup, new () { }
+    }
+}
+namespace Terp.Hosting.Gates
+{
+    public interface IStartupGate
+    {
+        string Name { get; }
+        System.Threading.Tasks.Task<bool> CheckAsync(System.Threading.CancellationToken cancellationToken);
+    }
+    public static class StartupGateExtensions
+    {
+        public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddStartupGate(this Microsoft.Extensions.DependencyInjection.IServiceCollection services, string name, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<bool>> check) { }
+        public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddStartupGate<[System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)]  TGate>(this Microsoft.Extensions.DependencyInjection.IServiceCollection services)
+            where TGate :  class, Terp.Hosting.Gates.IStartupGate { }
+    }
+}
+namespace Terp.Network
+{
+    public static class PortFinder
+    {
+        public static int FindFreeLocalPort() { }
+    }
+}
+namespace Terp.Resilience
+{
+    public static class Backoff
+    {
+        public static Terp.Resilience.BackoffPolicy Create(System.TimeSpan initialDelay, double multiplier = 2, System.TimeSpan? maxDelay = default, System.Random? random = null) { }
+    }
+    public sealed class BackoffPolicy
+    {
+        public System.TimeSpan Delay(int attempt) { }
+        public System.TimeSpan DelayWithJitter(int attempt) { }
+    }
+}
+namespace Terp.Threading
+{
+    public sealed class AsyncLock : System.IDisposable
+    {
+        public AsyncLock() { }
+        public System.Threading.Tasks.ValueTask<Terp.Threading.AsyncLockScope> AcquireAsync(System.Threading.CancellationToken cancellationToken = default) { }
+        public void Dispose() { }
+    }
+    public readonly struct AsyncLockScope : System.IDisposable
+    {
+        public void Dispose() { }
+    }
+}

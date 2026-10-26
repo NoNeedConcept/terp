@@ -1,0 +1,26 @@
+<Solution>
+  <Folder Name="/Examples/">
+    <Project Path="Terp.Akka.Example/Terp.Akka.Example.csproj" />
+    <Project Path="Terp.Example/Terp.Example.csproj" />
+    <Project Path="Terp.Hosting.Example/Terp.Hosting.Example.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+  </Folder>
+  <Folder Name="/Solution Items/Actions/">
+    <File Path="../.github/workflows/ci.yml" />
+    <File Path="../.github/workflows/release.yml" />
+    <File Path="../.github/workflows/security.yml" />
+  </Folder>
+  <Folder Name="/Solution Items/Repo/">
+    <File Path="../LICENSE" />
+    <File Path="../README.md" />
+  </Folder>
+  <Project Path="Terp.Akka/Terp.Akka.csproj" />
+  <Project Path="Terp.Akka.Tests/Terp.Akka.Tests.csproj" />
+  <Project Path="Terp.API.Tests/Terp.API.Tests.csproj" />
+  <Project Path="Terp.Tests/Terp.Tests.csproj" />
+  <Project Path="Terp/Terp.csproj" />
+</Solution>

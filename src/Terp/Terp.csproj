@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <Description>Foundation helpers for .NET apps: host setups, startup gates, diagnostics, resilience, network and date helpers.</Description>
+        <PackageTags>terp;helpers;hosting;setup;startup;diagnostics;resilience</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="Terp.Tests" />
+    </ItemGroup>
+
+</Project>

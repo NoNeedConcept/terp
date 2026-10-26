@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <Description>Akka.NET helpers built on Akka.Hosting.</Description>
+        <PackageTags>terp;akka;akka.net;hosting</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Akka.Cluster.Sharding" />
+        <PackageReference Include="Akka.Hosting" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="Terp.Akka.Tests" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Terp\Terp.csproj" />
+    </ItemGroup>
+
+</Project>

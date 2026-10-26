@@ -1,0 +1,55 @@
+<Project>
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AnalysisLevel>latest-recommended</AnalysisLevel>
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+        <Deterministic>true</Deterministic>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Authors>st0o0</Authors>
+        <Copyright>Copyright (c) 2026 st0o0</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/st0o0/terp</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/st0o0/terp</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageIcon>icon.png</PackageIcon>
+        <DebugType>embedded</DebugType>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <!-- Versions are injected by CI from .release-please-manifest.json (/p:TerpVersion=..., /p:TerpAkkaVersion=...) -->
+    <PropertyGroup Condition="'$(TerpVersion)' != ''">
+        <Version Condition="'$(MSBuildProjectName)' == 'Terp'">$(TerpVersion)</Version>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(TerpAkkaVersion)' != ''">
+        <Version Condition="'$(MSBuildProjectName)' == 'Terp.Akka'">$(TerpAkkaVersion)</Version>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(ContinuousIntegrationBuild)' == 'true'">
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <!-- Akka.Remote CVE (GHSA-jhpv-4q4f-43g5): remote-deserialization only, unpatched in 1.5.x -->
+        <NoWarn>$(NoWarn);NU1903;NU1904</NoWarn>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="$(MSBuildProjectName.EndsWith('Tests'))">
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(IsPackable)' != 'false'">
+        <None Include="$(MSBuildThisFileDirectory)../README.md" Pack="true" Visible="false" PackagePath="\" />
+        <None Include="$(MSBuildProjectDirectory)\terp-icon-512.png" Condition="'$(MSBuildProjectName)' == 'Terp'" Pack="true" Visible="false" PackagePath="\icon.png" />
+        <None Include="$(MSBuildProjectDirectory)\terp-akka-icon-512.png" Condition="'$(MSBuildProjectName)' == 'Terp.Akka'" Pack="true" Visible="false" PackagePath="\icon.png" />
+    </ItemGroup>
+
+</Project>

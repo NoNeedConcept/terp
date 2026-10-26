@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <IsTestProject>true</IsTestProject>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
+        <PackageReference Include="PublicApiGenerator" />
+        <PackageReference Include="Verify.DiffPlex" />
+        <PackageReference Include="Verify.XunitV3" />
+        <PackageReference Include="xunit.v3.mtp-v2" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="Xunit" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Terp\Terp.csproj" />
+        <ProjectReference Include="..\Terp.Akka\Terp.Akka.csproj" />
+    </ItemGroup>
+
+</Project>
