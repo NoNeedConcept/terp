@@ -3,7 +3,7 @@
 ## Project
 
 Terp – a monorepo of small .NET foundation libraries by [NoNeedConcept](https://github.com/NoNeedConcept).
-Two NuGet packages (`Terp`, `Terp.Akka`), independently versioned, released via release-please.
+Two NuGet packages (`Terp`, `Terp.Akka`), sharing one version, released via release-please.
 Documentation at [terp.noneedconcept.org](https://terp.noneedconcept.org).
 
 ## Solution structure
@@ -40,7 +40,7 @@ Always use the solution file, never individual csproj files.
 
 - **Central Package Management.** All package versions live in
   `src/Directory.Packages.props`. Do not add `Version=` attributes in csproj files.
-- **Independent versions per package.** release-please runs in manifest mode with one release PR per package (`separate-pull-requests`). Versions live only in `.release-please-manifest.json`; CI passes them to the build as `/p:TerpVersion=...` / `/p:TerpAkkaVersion=...`, which `src/Directory.Build.props` maps to each project. Never write a version into a csproj or props file; a new package needs one mapping block there.
+- **Shared version.** Both packages share one version via release-please (`".": "<version>"` in `.release-please-manifest.json`). CI passes `/p:Version=...` to the build. Never write a version into a csproj or props file.
 - **Dependency-light.** `Terp` depends on the Microsoft.Extensions
   *abstractions* only (Hosting.Abstractions, Logging.Abstractions; DI.Abstractions
   transitively). No ASP.NET Core reference, no `FrameworkReference`, no concrete
@@ -51,10 +51,7 @@ Always use the solution file, never individual csproj files.
 - **Minimum versions.** Library dependencies in `src/Directory.Packages.props` use
   `[x.y.z,)` floors; Renovate must not raise them. Raise a floor only when the code
   needs a newer API. A `ProjectReference` between Terp packages packs as `>=` the
-  referenced version. That version is evaluated at pack time of the dependent package (injected from the manifest), already published versions are
-  never changed, and a release must publish dependencies first (`release.yml` pushes in the order Terp, then Terp.Akka).
-- **Commit scope decides the release.** release-please attributes commits by path
-  (`src/Terp`, `src/Terp.Akka`); changes only in shared files such as `src/Directory.*.props` trigger no release.
+  referenced version. Both packages are always released together with the same version.
 - **API snapshot tests.** `src/Terp.API.Tests` snapshots the public API of `Terp` and
   `Terp.Akka` in `verify/*.verified.txt`. If an API test fails after an intentional public
   API change, review the diff and update the snapshot (rename the `.received.` file to
@@ -170,12 +167,8 @@ Publishing uses NuGet trusted publishing (OIDC), the same as Signal.Bot and WebS
 
 ### First release (0.1.0)
 
-`release-please-config.json` pins `"release-as": "0.1.0"` on both packages, so the first release PRs propose 0.1.0 regardless of the commit history.
-
-1. Merge the `Terp` release PR first. The `versions` job in `release.yml` fails if `Terp.Akka` is released while `Terp` is still `0.0.0` in the manifest,
-   because `Terp.Akka` packs `Terp >= <manifest version>`.
-2. Then merge the `Terp.Akka` release PR.
-3. Afterwards remove both `"release-as"` lines from `release-please-config.json` (commit `ci: remove release-as after first release`). Otherwise release-please keeps proposing 0.1.0.
+`release-please-config.json` pins `"release-as": "0.1.0"`, so the first release PR proposes 0.1.0 regardless of the commit history.
+After merging it, remove the `"release-as"` line (commit `ci: remove release-as after first release`). Otherwise release-please keeps proposing 0.1.0.
 
 Symbols are embedded in the assemblies (`DebugType` embedded, SourceLink via `PublishRepositoryUrl`/`EmbedUntrackedSources`), so there is no separate `.snupkg`.
 The package README is the root `README.md`, packed by `src/Directory.Build.props` for every packable project.

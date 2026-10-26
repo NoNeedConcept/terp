@@ -24,14 +24,6 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
-    <!-- Versions are injected by CI from .release-please-manifest.json (/p:TerpVersion=..., /p:TerpAkkaVersion=...) -->
-    <PropertyGroup Condition="'$(TerpVersion)' != ''">
-        <Version Condition="'$(MSBuildProjectName)' == 'Terp'">$(TerpVersion)</Version>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(TerpAkkaVersion)' != ''">
-        <Version Condition="'$(MSBuildProjectName)' == 'Terp.Akka'">$(TerpAkkaVersion)</Version>
-    </PropertyGroup>
-
     <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     </PropertyGroup>

@@ -1,64 +1,24 @@
 {
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
-  "separate-pull-requests": true,
-  "bump-minor-pre-major": true,
-  "bump-patch-for-minor-pre-major": true,
-  "changelog-sections": [
-    {
-      "type": "feat",
-      "section": "Features"
-    },
-    {
-      "type": "fix",
-      "section": "Bug Fixes"
-    },
-    {
-      "type": "perf",
-      "section": "Performance"
-    },
-    {
-      "type": "docs",
-      "section": "Documentation"
-    },
-    {
-      "type": "chore",
-      "hidden": true
-    },
-    {
-      "type": "refactor",
-      "section": "Refactoring"
-    },
-    {
-      "type": "style",
-      "hidden": true
-    },
-    {
-      "type": "test",
-      "hidden": true
-    },
-    {
-      "type": "ci",
-      "hidden": true
-    },
-    {
-      "type": "build",
-      "hidden": true
-    },
-    {
-      "type": "deps",
-      "section": "Dependencies"
-    }
-  ],
   "packages": {
-    "src/Terp": {
+    ".": {
       "release-type": "simple",
       "release-as": "0.1.0",
-      "component": "Terp"
-    },
-    "src/Terp.Akka": {
-      "release-type": "simple",
-      "release-as": "0.1.0",
-      "component": "Terp.Akka"
+      "bump-minor-pre-major": true,
+      "bump-patch-for-minor-pre-major": true,
+      "changelog-sections": [
+        { "type": "feat", "section": "Features" },
+        { "type": "fix", "section": "Bug Fixes" },
+        { "type": "perf", "section": "Performance" },
+        { "type": "docs", "section": "Documentation" },
+        { "type": "chore", "hidden": true },
+        { "type": "refactor", "section": "Refactoring" },
+        { "type": "style", "hidden": true },
+        { "type": "test", "hidden": true },
+        { "type": "ci", "hidden": true },
+        { "type": "build", "hidden": true },
+        { "type": "deps", "section": "Dependencies" }
+      ]
     }
   }
 }
