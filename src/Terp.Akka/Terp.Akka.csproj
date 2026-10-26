@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Akka.Cluster.Sharding" />
         <PackageReference Include="Akka.Hosting" />
     </ItemGroup>
 

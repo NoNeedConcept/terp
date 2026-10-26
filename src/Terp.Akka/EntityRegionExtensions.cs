@@ -1,4 +1,5 @@
 using Akka.Actor;
+using Akka.Cluster.Sharding;
 using Akka.DependencyInjection;
 using Akka.Hosting;
 
@@ -23,7 +24,7 @@ public static class EntityRegionExtensions
         this AkkaConfigurationBuilder builder,
         Func<IDependencyResolver, Props> entityPropsFactory,
         Action<EntityRegionOptions>? configure = null,
-        IEntityMessageExtractor? extractor = null)
+        IMessageExtractor? extractor = null)
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(entityPropsFactory);

@@ -1,4 +1,5 @@
 using Akka.Actor;
+using Akka.Cluster.Sharding;
 using Akka.Event;
 
 namespace Terp.Akka;
@@ -9,14 +10,18 @@ namespace Terp.Akka;
 /// </summary>
 /// <remarks>
 /// <para>
-/// An entity can request its own passivation by sending <see cref="Passivate"/> to its parent
-/// (<c>Context.Parent.Tell(Passivate.Instance)</c>). The region then buffers messages for that entity,
-/// sends it the <see cref="Passivate.StopMessage"/> (default <see cref="PoisonPill"/>), and waits
-/// for <see cref="Terminated"/>. This is the same pattern as Akka Cluster Sharding.
+/// Uses Akka's own <see cref="Passivate"/> message: an entity requests passivation by sending
+/// <c>Context.Parent.Tell(new Passivate(PoisonPill.Instance))</c>. The region buffers messages
+/// for that entity, sends it the <see cref="Passivate.StopMessage"/>, and waits for
+/// <see cref="Terminated"/>. This is the same protocol as Akka Cluster Sharding, so entity
+/// actors work without changes when migrating to <c>WithShardRegion</c>.
 /// </para>
 /// <para>
-/// Idle entities are passivated automatically via the same mechanism after
-/// <see cref="EntityRegionOptions.PassivationTimeout"/>.
+/// Uses Akka's <see cref="IMessageExtractor"/> for message routing, so the same extractor
+/// works with both local entity regions and cluster sharding.
+/// </para>
+/// <para>
+/// Idle entities are passivated automatically after <see cref="EntityRegionOptions.PassivationTimeout"/>.
 /// </para>
 /// <para>
 /// Entities that terminate unexpectedly (without passivation) more than
@@ -37,7 +42,7 @@ public sealed class EntityRegionActor : ReceiveActor, IWithTimers
     }
 
     private readonly Func<IActorContext, string, IActorRef> _entityFactory;
-    private readonly IEntityMessageExtractor _extractor;
+    private readonly IMessageExtractor _extractor;
     private readonly EntityRegionOptions _options;
     private readonly string _regionTag;
     private readonly ILoggingAdapter _log;
@@ -56,14 +61,14 @@ public sealed class EntityRegionActor : ReceiveActor, IWithTimers
     /// Initializes a new instance of the <see cref="EntityRegionActor"/> class.
     /// </summary>
     /// <param name="entityFactory">Creates a child actor for the given entity identity.</param>
-    /// <param name="extractor">Extracts entity identity and inner message.</param>
+    /// <param name="extractor">Extracts entity identity and inner message. Use <see cref="EntityIdExtractor"/> for <see cref="IWithEntityId"/> messages.</param>
     /// <param name="options">Region configuration.</param>
     /// <param name="regionTag">Tag value for metrics, typically the registry key type name.</param>
     /// <param name="timeProvider">Time source, or <see langword="null"/> for <see cref="TimeProvider.System"/>.</param>
     /// <exception cref="ArgumentNullException"><paramref name="entityFactory"/>, <paramref name="extractor"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     public EntityRegionActor(
         Func<IActorContext, string, IActorRef> entityFactory,
-        IEntityMessageExtractor extractor,
+        IMessageExtractor extractor,
         EntityRegionOptions options,
         string regionTag,
         TimeProvider? timeProvider = null)
@@ -344,7 +349,7 @@ public sealed class EntityRegionActor : ReceiveActor, IWithTimers
         }
     }
 
-    internal void StartDrain()
+    private void StartDrain()
     {
         Timers.Cancel(PassivationTimerKey);
         Become(Draining);
