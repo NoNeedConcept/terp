@@ -161,7 +161,7 @@ Publishing uses NuGet trusted publishing (OIDC), the same as Signal.Bot and WebS
 (the OIDC `job_workflow_ref` must match the policy), so no API key is stored.
 
 1. GitHub: create the environment `nuget` (Settings, Environments) and the repository secret `NUGET_USER` (the NuGet.org user name that owns the policy).
-2. NuGet.org: create a trusted publishing policy for the owner account with repository `st0o0/terp`, workflow `release.yml`, environment `nuget`.
+2. NuGet.org: create a trusted publishing policy for the owner account with repository `NoNeedConcept/terp`, workflow `release.yml`, environment `nuget`.
    Do this for both package IDs `Terp` and `Terp.Akka`. If NuGet.org does not allow a policy before the package ID exists, the first push of each package needs a
    one-off API key instead: add a repository secret `NUGET_API_KEY` (scope Push, glob `Terp*`) and temporarily pass it as `--api-key` in the `Push released packages to NuGet`
    step in place of the `NuGet/login` output; switch back once the policies exist.
