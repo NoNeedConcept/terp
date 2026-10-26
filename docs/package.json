@@ -1,7 +1,7 @@
 {
   "name": "terp-docs",
   "private": true,
-  "packageManager": "pnpm@9.15.9",
+  "packageManager": "pnpm@12.15.0",
   "type": "module",
   "scripts": {
     "dev": "vitepress dev",
