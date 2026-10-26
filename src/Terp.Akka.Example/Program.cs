@@ -10,7 +10,7 @@ builder.Logging.ClearProviders().AddSimpleConsole(o => o.SingleLine = true);
 builder.Services.AddSingleton<IGreeter, Greeter>();     // dependency injected into the actor
 builder.Services.AddHostedService<DemoWorker>();
 
-builder.Setup(new ExampleActorSystem());         // ActorSystemSetup subclass owns the one actor system
+builder.Setup<ExampleActorSystem>();
 
 using var host = builder.Build();
 
