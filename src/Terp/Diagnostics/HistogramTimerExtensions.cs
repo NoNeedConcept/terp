@@ -6,6 +6,70 @@ namespace Terp.Diagnostics;
 /// <summary>Extensions to time code blocks into a <see cref="Histogram{T}"/> of seconds.</summary>
 public static class HistogramTimerExtensions
 {
+    /// <summary>
+    /// Executes <paramref name="action"/> and records the elapsed seconds. On exception, the
+    /// measurement carries <c>outcome=failure</c>; otherwise <c>outcome=success</c>.
+    /// </summary>
+    /// <typeparam name="T">The return type of the action.</typeparam>
+    /// <param name="histogram">The histogram receiving the elapsed seconds.</param>
+    /// <param name="action">The async work to time.</param>
+    /// <param name="tags">Tags added to the measurement.</param>
+    /// <param name="cancellationToken">Passed to <paramref name="action"/>.</param>
+    /// <param name="timeProvider">The time source; <see cref="TimeProvider.System"/> when <see langword="null"/>.</param>
+    /// <returns>The result of <paramref name="action"/>.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="histogram"/> or <paramref name="action"/> is <see langword="null"/>.</exception>
+    public static async Task<T> TimeAsync<T>(this Histogram<double> histogram,
+        Func<CancellationToken, Task<T>> action,
+        TagList tags = default,
+        CancellationToken cancellationToken = default,
+        TimeProvider? timeProvider = null)
+    {
+        ArgumentNullException.ThrowIfNull(histogram);
+        ArgumentNullException.ThrowIfNull(action);
+
+        using var timer = new TimerScope(histogram, timeProvider ?? TimeProvider.System, in tags);
+        try
+        {
+            return await action(cancellationToken).ConfigureAwait(false);
+        }
+        catch
+        {
+            timer.Fail();
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Executes <paramref name="action"/> and records the elapsed seconds. On exception, the
+    /// measurement carries <c>outcome=failure</c>; otherwise <c>outcome=success</c>.
+    /// </summary>
+    /// <param name="histogram">The histogram receiving the elapsed seconds.</param>
+    /// <param name="action">The async work to time.</param>
+    /// <param name="tags">Tags added to the measurement.</param>
+    /// <param name="cancellationToken">Passed to <paramref name="action"/>.</param>
+    /// <param name="timeProvider">The time source; <see cref="TimeProvider.System"/> when <see langword="null"/>.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="histogram"/> or <paramref name="action"/> is <see langword="null"/>.</exception>
+    public static async Task TimeAsync(this Histogram<double> histogram,
+        Func<CancellationToken, Task> action,
+        TagList tags = default,
+        CancellationToken cancellationToken = default,
+        TimeProvider? timeProvider = null)
+    {
+        ArgumentNullException.ThrowIfNull(histogram);
+        ArgumentNullException.ThrowIfNull(action);
+
+        using var timer = new TimerScope(histogram, timeProvider ?? TimeProvider.System, in tags);
+        try
+        {
+            await action(cancellationToken).ConfigureAwait(false);
+        }
+        catch
+        {
+            timer.Fail();
+            throw;
+        }
+    }
+
     /// <summary>Starts a timer without extra tags.</summary>
     /// <param name="histogram">The histogram receiving the elapsed seconds.</param>
     /// <param name="timeProvider">The time source; <see cref="TimeProvider.System"/> when <see langword="null"/>.</param>

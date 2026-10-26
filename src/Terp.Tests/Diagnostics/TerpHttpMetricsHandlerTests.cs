@@ -96,7 +96,7 @@ public sealed class TerpHttpMetricsHandlerTests
 
         var m = Assert.Single(collector.For(Duration));
         Assert.Multiple(
-            () => Assert.Equal("tmdb", m.Tags[TerpHttpMetricsHandler.TagName]),
+            () => Assert.Equal("tmdb", m.Tags[TerpHttpMetricsHandler.ApiTagName]),
             () => Assert.Equal(200, m.Tags["http.response.status_code"]),
             () => Assert.False(m.Tags.ContainsKey("error.type")));
     }
@@ -113,7 +113,7 @@ public sealed class TerpHttpMetricsHandlerTests
 
         var m = Assert.Single(collector.For(Duration));
         Assert.Multiple(
-            () => Assert.Equal("tmdb", m.Tags[TerpHttpMetricsHandler.TagName]),
+            () => Assert.Equal("tmdb", m.Tags[TerpHttpMetricsHandler.ApiTagName]),
             () => Assert.Equal(500, m.Tags["http.response.status_code"]),
             () => Assert.Equal("500", m.Tags["error.type"]));
     }
@@ -135,7 +135,7 @@ public sealed class TerpHttpMetricsHandlerTests
         var m = Assert.Single(collector.For(Duration));
         Assert.Multiple(
             () => Assert.NotNull(ex),
-            () => Assert.Equal("tmdb", m.Tags[TerpHttpMetricsHandler.TagName]),
+            () => Assert.Equal("tmdb", m.Tags[TerpHttpMetricsHandler.ApiTagName]),
             () => Assert.Equal("connection_error", m.Tags["error.type"]),
             () => Assert.False(m.Tags.ContainsKey("http.response.status_code")));
     }
@@ -151,7 +151,7 @@ public sealed class TerpHttpMetricsHandlerTests
 
         using var response = client.Send(request, TestContext.Current.CancellationToken);
 
-        Assert.Equal("sync-api", Assert.Single(collector.For(Duration)).Tags[TerpHttpMetricsHandler.TagName]);
+        Assert.Equal("sync-api", Assert.Single(collector.For(Duration)).Tags[TerpHttpMetricsHandler.ApiTagName]);
     }
 
     [Fact]
@@ -164,13 +164,19 @@ public sealed class TerpHttpMetricsHandlerTests
 
         using var response = await client.GetAsync(new Uri($"http://127.0.0.1:{server.Port}/ok"), TestContext.Current.CancellationToken);
 
-        Assert.False(Assert.Single(collector.For(Duration)).Tags.ContainsKey(TerpHttpMetricsHandler.TagName));
+        Assert.False(Assert.Single(collector.For(Duration)).Tags.ContainsKey(TerpHttpMetricsHandler.ApiTagName));
     }
 
     [Fact]
-    public void TagName_Constant_IsApi()
+    public void ApiTagName_Constant_IsApi()
     {
-        Assert.Equal("api", TerpHttpMetricsHandler.TagName);
+        Assert.Equal("api", TerpHttpMetricsHandler.ApiTagName);
+    }
+
+    [Fact]
+    public void StatusClassTagName_Constant_IsStatusClass()
+    {
+        Assert.Equal("status_class", TerpHttpMetricsHandler.StatusClassTagName);
     }
 
     [Fact]

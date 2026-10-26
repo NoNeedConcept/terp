@@ -3,13 +3,14 @@ using System.Net.Http.Metrics;
 namespace Terp.Diagnostics;
 
 /// <summary>
-/// Adds the tag <c>api=&lt;apiName&gt;</c> to the built-in HttpClient metrics (meter <c>System.Net.Http</c>, e.g.
-/// <c>http.client.request.duration</c>) of every request that passes through it. It records no instruments of its own.
+/// Adds the tags <c>api=&lt;apiName&gt;</c> and <c>status_class</c> (<c>2xx</c>, <c>3xx</c>, …, or <c>error</c>)
+/// to the built-in HttpClient metrics (meter <c>System.Net.Http</c>, e.g. <c>http.client.request.duration</c>)
+/// of every request that passes through it. It records no instruments of its own.
 /// </summary>
 /// <remarks>
-/// The tag is present on success, on non-success status codes and on connection failures. A request cancelled before it
-/// was sent is not recorded by the BCL at all. The handler has no dependency on <c>IHttpClientBuilder</c>; the application
-/// registers it as an HttpClient message handler and subscribes to the BCL meter:
+/// The tags are present on success, on non-success status codes and on connection failures. A request cancelled before
+/// it was sent is not recorded by the BCL at all. The handler has no dependency on <c>IHttpClientBuilder</c>; the
+/// application registers it as an HttpClient message handler and subscribes to the BCL meter:
 /// <code>
 /// services.AddHttpClient("tmdb").AddHttpMessageHandler(() => new TerpHttpMetricsHandler("tmdb"));
 /// builder.Services.AddOpenTelemetry().WithMetrics(m => m.AddMeter("System.Net.Http"));
@@ -17,8 +18,11 @@ namespace Terp.Diagnostics;
 /// </remarks>
 public sealed class TerpHttpMetricsHandler : DelegatingHandler
 {
-    /// <summary>The name of the added tag (<c>"api"</c>).</summary>
-    public const string TagName = "api";
+    /// <summary>The name of the API tag (<c>"api"</c>).</summary>
+    public const string ApiTagName = "api";
+
+    /// <summary>The name of the status class tag (<c>"status_class"</c>).</summary>
+    public const string StatusClassTagName = "status_class";
 
     private readonly Action<HttpMetricsEnrichmentContext> _enrich;
 
@@ -28,7 +32,14 @@ public sealed class TerpHttpMetricsHandler : DelegatingHandler
     public TerpHttpMetricsHandler(string apiName)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(apiName);
-        _enrich = context => context.AddCustomTag(TagName, apiName);
+        _enrich = context =>
+        {
+            context.AddCustomTag(ApiTagName, apiName);
+            var statusClass = context.Response is { } response
+                ? $"{(int)response.StatusCode / 100}xx"
+                : "error";
+            context.AddCustomTag(StatusClassTagName, statusClass);
+        };
     }
 
     /// <inheritdoc />
