@@ -26,7 +26,7 @@ hero:
 | `Terp` | Host setups and startup gates, diagnostics and metrics helpers, resilience, network and date helpers. Depends on the Microsoft.Extensions abstractions only. | <PackageVersion package="Terp" bare /> | <InstallCommand cmd="dotnet add package Terp" /> |
 | `Terp.Akka` | Akka.NET helpers on Akka.Hosting: actor system setup, resolving actors, a registry and backoff supervision. Builds on `Terp`. | <PackageVersion package="Terp.Akka" bare /> | <InstallCommand cmd="dotnet add package Terp.Akka" /> |
 
-Each package is versioned and released on its own. Dependencies are declared as minimum versions, so you update when you want to, not when a dependency does.
+Both packages share one version and are always released together.
 
 ## Where to start
 

@@ -90,7 +90,7 @@ export default defineConfig({
       llmstxt({
         domain: origin || undefined,
         details:
-          'Terp is a set of small foundation libraries for .NET applications, shipped as two NuGet packages with independent versions. ' +
+          'Terp is a set of small foundation libraries for .NET applications, shipped as two NuGet packages. ' +
           'The package Terp holds host setups (ISetup<T>), startup gates, diagnostics and metrics helpers, exponential backoff, a free-port finder and TimeProvider based date predicates, and depends on the Microsoft.Extensions abstractions only. ' +
           'The package Terp.Akka builds on Terp and Akka.Hosting: one ActorSystemSetup per host, actor resolving with dependency injection, an actor registry and BackoffSupervisor helpers.',
         ignoreFiles: ['index.md', 'brand/index.md']
