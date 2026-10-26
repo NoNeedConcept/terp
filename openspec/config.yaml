@@ -1,0 +1,66 @@
+schema: spec-driven
+
+context: |
+  # Terp – .NET foundation libraries
+
+  Tech stack: C# 12+ / .NET 10, xUnit (Microsoft.Testing.Platform), Akka.NET (Akka.Hosting)
+  Build: `dotnet build src/Terp.slnx` / `dotnet test --solution Terp.slnx` (from src/)
+  CI: GitHub Actions, warnings-as-errors, commitlint (Conventional Commits)
+  Release: release-please manifest mode, NuGet trusted publishing (OIDC), independent versions per package
+  Docs: VitePress on GitHub Pages (terp.noneedconcept.org)
+
+  ## Packages
+
+  - `Terp` – host setups (`ISetup<T>`), startup gates, diagnostics/metrics, resilience (backoff), network, date helpers.
+    Depends on Microsoft.Extensions abstractions only. No ASP.NET Core, no concrete Hosting.
+  - `Terp.Akka` – Akka.NET helpers on Akka.Hosting. Depends on `Terp`.
+  - No other packages; new functionality goes into one of these two.
+
+  ## Architecture principles
+
+  - Reflection-free, trim-safe, Native AOT compatible (`Terp.Hosting.Example` proves it)
+  - Dependency-light: only abstractions, no concrete implementations in library code
+  - Central Package Management (`Directory.Packages.props`), minimum version floors `[x.y.z,)`
+  - Versions injected by CI from `.release-please-manifest.json`, never in csproj
+  - API surface snapshotted in `Terp.API.Tests` (Verify + PublicApiGenerator)
+
+  ## C# conventions (enforced by .editorconfig + CI)
+
+  - File-scoped namespaces, namespace = folder, one public type per file
+  - `sealed` by default (CA1852), stateless helpers are `static` (CA1052)
+  - Allman braces, 4 spaces, LF, UTF-8 no BOM
+  - `_camelCase` fields, PascalCase constants
+  - `ArgumentNullException.ThrowIfNull` on public params, nullable on, `!` only with justification
+  - XML docs on all public API, `<inheritdoc />` for implementations
+  - `ConfigureAwait(false)` in library code, not in tests
+  - No `async void`, `.Result`, `.Wait()`; always pass `CancellationToken`
+  - Test naming: `Method_Scenario_ExpectedResult` (PascalCase)
+
+  ## Brand
+
+  Colour: Mud `#C98B2B`, Mud deep `#8F5F14`, Ink `#1A1813`, Paper `#F3EFE6`
+  Type: Geist (headings/body), Geist Mono (code)
+  Assets: `docs/brand/` (full CI design kit)
+
+rules:
+  proposal:
+    - Reference the affected package (Terp or Terp.Akka) in the title
+    - State whether the change is public API or internal
+    - If public API, note whether it is additive or breaking
+    - Include the conventional commit type (feat, fix, refactor, docs, ci, chore)
+    - Keep proposals under 500 words
+  design:
+    - Explain how the design stays trim/AOT-safe
+    - Note any new dependencies and justify them (dependency-light principle)
+    - Show which ISetup<T> targets are affected, if any
+    - Reference existing patterns in the codebase rather than inventing new ones
+  tasks:
+    - One task per logical unit of work (one file change, one test, one config update)
+    - Tasks that touch public API must include an API snapshot update step
+    - Include a "verify" task at the end (build + test + format check)
+    - Mark tasks that need conventional commit scope (feat, fix, etc.)
+  specs:
+    - Use C# code fences for API examples
+    - Reference the namespace and package where types live
+    - Note nullability and CancellationToken requirements
+    - If adding a public type, show the expected API snapshot diff
