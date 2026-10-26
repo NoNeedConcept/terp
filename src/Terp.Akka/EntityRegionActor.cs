@@ -31,6 +31,11 @@ public sealed class EntityRegionActor : ReceiveActor, IWithTimers
     private sealed record PassivationTick;
     private sealed record EntityState(IActorRef Ref, DateTimeOffset LastActivity);
 
+    internal sealed record StartDrainCommand
+    {
+        internal static readonly StartDrainCommand Instance = new();
+    }
+
     private readonly Func<IActorContext, string, IActorRef> _entityFactory;
     private readonly IEntityMessageExtractor _extractor;
     private readonly EntityRegionOptions _options;
@@ -86,6 +91,7 @@ public sealed class EntityRegionActor : ReceiveActor, IWithTimers
     private void Active()
     {
         Receive<PassivationTick>(_ => RunPassivation());
+        Receive<StartDrainCommand>(_ => StartDrain());
         Receive<Passivate>(HandlePassivateRequest);
         Receive<Terminated>(HandleTerminated);
         ReceiveAny(HandleMessage);

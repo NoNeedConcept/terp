@@ -31,20 +31,20 @@
 - [x] 5.1 Write `EntityIdExtractorTests` — IWithEntityId routing, non-IWithEntityId returns null
 - [x] 5.2 Write `EntityRegionActorTests` — spawn on first message, route to existing, null entity ID unhandled
 - [x] 5.3 Write passivation tests — idle entity stopped, active entity kept, messages buffered and replayed
-- [ ] 5.4 Write restart limit tests — within limit respawns, exceeds limit sends to DeadLetters
+- [x] 5.4 Write restart limit tests — within limit respawns, exceeds limit sends to DeadLetters
 - [x] 5.5 Write max-entities tests — under limit spawns, at limit rejects
-- [ ] 5.6 Write drain tests — no new entities in drain, existing entities receive PoisonPill
-- [ ] 5.7 Write metrics tests — verify counters increment on spawn, passivation, restart
+- [x] 5.6 Write drain tests — no new entities in drain, existing entities receive PoisonPill
+- [x] 5.7 Write metrics tests — verify counters increment on spawn, passivation, restart
 
 ## 6. API snapshots and format
 
 - [x] 6.1 Update `Terp.API.Tests` verified snapshots for new public API in both packages
-- [ ] 6.2 Run `dotnet format Terp.slnx --verify-no-changes` and fix any violations
-- [ ] 6.3 Run full build with `-p:ContinuousIntegrationBuild=true` to verify CI parity
+- [x] 6.2 Run `dotnet format Terp.slnx --verify-no-changes` and fix any violations
+- [x] 6.3 Run full build with `-p:ContinuousIntegrationBuild=true` to verify CI parity
 
 ## 7. Documentation
 
-- [ ] 7.1 Add entity region docs page at `docs/akka/entity-region.md`
-- [ ] 7.2 Add async lock docs page at `docs/threading/index.md` (or `docs/threading/async-lock.md`)
-- [ ] 7.3 Update `docs/.vitepress/config.ts` sidebar with new pages
-- [ ] 7.4 Update `AGENTS.md` namespace listing with new types
+- [x] 7.1 Add entity region docs page at `docs/akka/entity-region.md`
+- [x] 7.2 Add async lock docs page at `docs/threading/index.md`
+- [x] 7.3 Update `docs/.vitepress/config.ts` sidebar with new pages
+- [x] 7.4 Update `AGENTS.md` namespace listing with new types

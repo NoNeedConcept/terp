@@ -127,7 +127,8 @@ export default defineConfig({
           { text: 'Diagnostics', link: '/diagnostics/' },
           { text: 'Resilience', link: '/resilience/' },
           { text: 'Network', link: '/network/' },
-          { text: 'DateTime', link: '/datetime/' }
+          { text: 'DateTime', link: '/datetime/' },
+          { text: 'Threading', link: '/threading/' }
         ]
       },
       {
@@ -137,7 +138,8 @@ export default defineConfig({
           { text: 'Actor system', link: '/akka/actor-system' },
           { text: 'Resolve', link: '/akka/resolve' },
           { text: 'Registry', link: '/akka/registry' },
-          { text: 'Backoff', link: '/akka/backoff' }
+          { text: 'Backoff', link: '/akka/backoff' },
+          { text: 'Entity region', link: '/akka/entity-region' }
         ]
       },
       {

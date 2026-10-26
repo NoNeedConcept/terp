@@ -19,8 +19,10 @@ src/
 ```
 
 Namespaces: `Terp` has `Terp.Diagnostics` (metrics helpers: `TimerScope`, `JobMetrics`/`JobRun`, `TerpHttpMetricsHandler`), `Terp.Resilience`, `Terp.Network`,
+`Terp.Threading` (`AsyncLock`, `AsyncLockScope`),
 `Terp.Hosting` (`ISetup`, `ISetup<T>`, `SetupContext`, `SetupExtensions`, `ApplicationSetupExtensions`) and `Terp.Hosting.Gates` (`IStartupGate`, `AddStartupGate`).
-A typical host needs `using Terp.Hosting;` plus `Terp.Hosting.Gates` at most. `Terp.Akka` holds the Akka setup and actor helpers.
+A typical host needs `using Terp.Hosting;` plus `Terp.Hosting.Gates` at most.
+`Terp.Akka` holds the Akka setup, actor helpers and `EntityRegionActor` (child-per-entity routing with passivation, `Passivate`, `IEntityMessageExtractor`, `WithEntityRegion<TKey>`).
 There are exactly two packages (`Terp` <- `Terp.Akka`); new functionality goes into one of them.
 
 ## Build & test

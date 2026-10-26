@@ -26,6 +26,8 @@ using Terp.Akka;
 | `Match` on `Option<T>` | pattern-match Akka's `Option<T>` | [Registry and context](/akka/registry) |
 | `IWithEntityId` | marker for types that carry an entity id | [Registry and context](/akka/registry) |
 | `BackoffOnFailure`, `BackoffOnStop` | wrap `Props` in a `BackoffSupervisor` with defaults | [Backoff helpers](/akka/backoff) |
+| `EntityRegionActor`, `WithEntityRegion` | route messages to per-entity children with passivation, restart limits and metrics | [Entity region](/akka/entity-region) |
+| `Passivate` | entity-initiated passivation, compatible with Akka Cluster Sharding | [Entity region](/akka/entity-region) |
 
 ## A host with an actor system
 
@@ -70,4 +72,4 @@ Terp.Akka does not hide Akka.Hosting. Inside `BuildSystem` you use the normal `A
 
 ## Not included
 
-Terp.Akka has no contributor setups, no cluster or sharding abstraction and no actor base classes. Actors are registered in `BuildSystem`. `IWithEntityId` is only an interface; you write the sharding message extractor yourself.
+Terp.Akka has no contributor setups, no cluster or sharding abstraction and no actor base classes. Actors are registered in `BuildSystem`. The [entity region](/akka/entity-region) provides local child-per-entity routing with the same passivation protocol as Akka Cluster Sharding, so you can migrate later.
