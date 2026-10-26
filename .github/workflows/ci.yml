@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dotnet:
+    uses: st0o0/github-workflows/.github/workflows/dotnet-ci.yml@main
+    with:
+      solution-file: Terp.slnx
+      has-dockerfile: false
+
+  commits:
+    uses: st0o0/github-workflows/.github/workflows/commitlint.yml@main
