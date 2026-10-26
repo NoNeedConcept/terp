@@ -1,0 +1,51 @@
+# .NET build output
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+artifacts/
+publish/
+
+# IDE / editor
+.vs/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.iml
+*.DotSettings.user
+
+# NuGet
+*.nupkg
+*.snupkg
+
+# Test results
+[Tt]est[Rr]esult*/
+
+# MSBuild binary log
+*.binlog
+
+# Benchmark results
+BenchmarkDotNet.Artifacts/
+
+# Environment files
+**.env
+
+# Verify snapshot testing
+*.received.*
+
+# Generated API reference (rebuilt from XML docs during docs build)
+docs/api/
+
+# Coverage
+coverage-results/
+results/
+
+# Claude Code
+.claude/
+
+# Worktrees
+.worktrees/
+
+# OS
+Thumbs.db
+.DS_Store

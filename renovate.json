@@ -1,0 +1,20 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "local>st0o0/renovate-config:dotnet"
+  ],
+  "packageRules": [
+    {
+      "description": "Minimum-version ranges ([x,)) in Directory.Packages.props are deliberate floors for consumers -- never raise them automatically",
+      "matchManagers": ["nuget"],
+      "matchFileNames": ["src/Directory.Packages.props"],
+      "matchCurrentValue": "/^\\[/",
+      "enabled": false
+    },
+    {
+      "description": "Verify 33+ requires a sponsorship/maintenance fee (SponsorCheck SC021) -- stay on 32.x until decided",
+      "matchPackageNames": ["Verify.XunitV3"],
+      "allowedVersions": "<33"
+    }
+  ]
+}

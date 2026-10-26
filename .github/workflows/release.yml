@@ -1,0 +1,109 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    uses: st0o0/github-workflows/.github/workflows/release-please.yml@main
+    permissions:
+      contents: write
+      pull-requests: write
+
+  versions:
+    needs: release-please
+    if: needs.release-please.outputs.releases_created == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      properties: ${{ steps.manifest.outputs.properties }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Guard dependency versions
+        env:
+          PATHS_RELEASED: ${{ needs.release-please.outputs.paths_released }}
+        run: |
+          # Terp.Akka packs "Terp >= <manifest version>"; Terp must have been released before.
+          if echo "$PATHS_RELEASED" | grep -q 'src/Terp.Akka' && grep -q '"src/Terp": "0.0.0"' .release-please-manifest.json; then
+            echo "::error::Terp.Akka was released while Terp is still 0.0.0. Merge the Terp release PR first."
+            exit 1
+          fi
+      - name: Read package versions from release-please manifest
+        id: manifest
+        run: |
+          # src/Terp.Akka -> /p:TerpAkkaVersion=<version>
+          props=$(jq -r 'to_entries | map("/p:" + (.key | split("/") | last | gsub("\\."; "")) + "Version=" + .value) | join(" ")' .release-please-manifest.json)
+          echo "properties=$props" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: [release-please, versions]
+    uses: st0o0/github-workflows/.github/workflows/dotnet-build-nuget.yml@main
+    permissions:
+      contents: read
+    with:
+      solution-file: Terp.slnx
+      msbuild-properties: ${{ needs.versions.outputs.properties }}
+
+  publish:
+    needs: [release-please, build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    environment:
+      name: nuget
+      url: https://www.nuget.org/profiles/st0o0
+    env:
+      # Released paths in dependency order (Terp <- Terp.Akka), so a package is never pushed before the
+      # packages it depends on; paths not listed here come last.
+      DEPENDENCY_ORDER: |
+        . as $released
+        | ["src/Terp", "src/Terp.Akka"] as $order
+        | ($order - ($order - $released)) + ($released - $order)
+        | .[]
+    steps:
+      - uses: actions/setup-dotnet@v6
+      - uses: actions/download-artifact@v8
+        with:
+          name: nuget-packages
+          path: ./packages
+      - uses: NuGet/login@v1
+        id: nuget-login
+        with:
+          user: ${{ secrets.NUGET_USER }}
+      - name: Push released packages to NuGet
+        env:
+          RELEASE_JSON: ${{ needs.release-please.outputs.json }}
+          PATHS_RELEASED: ${{ needs.release-please.outputs.paths_released }}
+          NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
+        run: |
+          # Only push packages release-please released; unreleased ones are packed
+          # with their current csproj version and must not reach NuGet.
+          for path in $(echo "$PATHS_RELEASED" | jq -r "$DEPENDENCY_ORDER"); do
+            name=$(basename "$path")
+            version=$(echo "$RELEASE_JSON" | jq -r --arg p "$path" '.[$p + "--version"]')
+            dotnet nuget push "./packages/${name}.${version}.nupkg" \
+              --api-key "$NUGET_API_KEY" \
+              --source https://api.nuget.org/v3/index.json \
+              --skip-duplicate
+          done
+      - name: Attach .nupkg to GitHub releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_JSON: ${{ needs.release-please.outputs.json }}
+          PATHS_RELEASED: ${{ needs.release-please.outputs.paths_released }}
+        run: |
+          for path in $(echo "$PATHS_RELEASED" | jq -r "$DEPENDENCY_ORDER"); do
+            name=$(basename "$path")
+            version=$(echo "$RELEASE_JSON" | jq -r --arg p "$path" '.[$p + "--version"]')
+            tag=$(echo "$RELEASE_JSON" | jq -r --arg p "$path" '.[$p + "--tag_name"]')
+            gh release upload "$tag" "./packages/${name}.${version}.nupkg" \
+              --repo "${{ github.repository }}" --clobber
+          done
