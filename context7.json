@@ -1,0 +1,14 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "Terp",
+  "description": "Small foundation libraries for .NET: host setups, startup gates, metrics helpers, backoff and Akka.NET helpers (Terp, Terp.Akka).",
+  "folders": ["docs"],
+  "excludeFolders": [".vitepress", "public", "node_modules"],
+  "excludeFiles": ["LICENSE"],
+  "rules": [
+    "List setups explicitly and call builder.Setup(...) in the order they should run; there is no discovery or ordering attribute.",
+    "A setup implements ISetup<TTarget> once per part of the host it changes, and Setup(target, context) is always the method name.",
+    "Register startup gates with services.AddStartupGate(...); gates run while the host starts and are retried with exponential backoff.",
+    "Terp.Akka allows one actor system per host: derive from ActorSystemSetup and add actors in BuildSystem."
+  ]
+}
