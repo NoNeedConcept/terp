@@ -2,6 +2,12 @@
 [assembly: System.Runtime.Versioning.TargetFramework(".NETCoreApp,Version=v10.0", FrameworkDisplayName=".NET 10.0")]
 namespace Terp.Akka
 {
+    public static class ActorRegistrationExtensions
+    {
+        public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddActorRegistration<T>(this Microsoft.Extensions.DependencyInjection.IServiceCollection services)
+            where T :  class, Terp.Akka.IActorRegistration, new () { }
+        public static Akka.Hosting.AkkaConfigurationBuilder ApplyRegistrations(this Akka.Hosting.AkkaConfigurationBuilder builder, System.IServiceProvider provider) { }
+    }
     public abstract class ActorSystemSetup : Terp.Hosting.ISetup, Terp.Hosting.ISetup<Microsoft.Extensions.DependencyInjection.IServiceCollection>
     {
         protected ActorSystemSetup() { }
@@ -50,6 +56,10 @@ namespace Terp.Akka
         public System.TimeSpan PassivationInterval { get; init; }
         public System.TimeSpan PassivationTimeout { get; init; }
         public System.TimeSpan RestartWindow { get; init; }
+    }
+    public interface IActorRegistration
+    {
+        void Configure(Akka.Hosting.AkkaConfigurationBuilder builder, System.IServiceProvider provider);
     }
     public interface IWithEntityId
     {

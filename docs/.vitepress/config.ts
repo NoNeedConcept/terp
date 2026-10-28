@@ -136,6 +136,7 @@ export default defineConfig({
         items: [
           { text: 'Overview', link: '/akka/' },
           { text: 'Actor system', link: '/akka/actor-system' },
+          { text: 'Actor registration', link: '/akka/actor-registration' },
           { text: 'Resolve', link: '/akka/resolve' },
           { text: 'Registry', link: '/akka/registry' },
           { text: 'Backoff', link: '/akka/backoff' },

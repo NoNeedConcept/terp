@@ -14,7 +14,6 @@ internal sealed class ExampleActorSystem : ActorSystemSetup
                 l.ClearLoggers();
                 l.AddLoggerFactory(); // route Akka logs through Microsoft.Extensions.Logging
             })
-            .WithActors((system, registry, resolver) =>
-                registry.Register<GreeterActor>(system.ActorOf(resolver.Props<GreeterActor>(), "greeter")));
+            .ApplyRegistrations(serviceProvider);
     }
 }

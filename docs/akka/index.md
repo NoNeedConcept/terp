@@ -25,6 +25,7 @@ using Terp.Akka;
 | `GetChild`, `ChildTell`, `ChildForward` | find and message children of an actor context | [Registry and context](/akka/registry) |
 | `Match` on `Option<T>` | pattern-match Akka's `Option<T>` | [Registry and context](/akka/registry) |
 | `IWithEntityId` | marker for types that carry an entity id | [Registry and context](/akka/registry) |
+| `IActorRegistration`, `AddActorRegistration`, `ApplyRegistrations` | let libraries declare actors the host dispatches | [Actor registration](/akka/actor-registration) |
 | `BackoffOnFailure`, `BackoffOnStop` | wrap `Props` in a `BackoffSupervisor` with defaults | [Backoff helpers](/akka/backoff) |
 | `EntityRegionActor`, `WithEntityRegion` | route messages to per-entity children with passivation, restart limits and metrics | [Entity region](/akka/entity-region) |
 | `Passivate` | entity-initiated passivation, compatible with Akka Cluster Sharding | [Entity region](/akka/entity-region) |
@@ -49,8 +50,7 @@ internal sealed class ExampleActorSystem : ActorSystemSetup
                 l.ClearLoggers();
                 l.AddLoggerFactory();   // route Akka logs through Microsoft.Extensions.Logging
             })
-            .WithActors((system, registry, resolver) =>
-                registry.Register<GreeterActor>(system.ActorOf(resolver.Props<GreeterActor>(), "greeter")));
+            .ApplyRegistrations(serviceProvider);
     }
 }
 ```
@@ -60,7 +60,8 @@ using Terp.Hosting;
 
 var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddSingleton<IGreeter, Greeter>();   // injected into the actor
-builder.Setup(new ExampleActorSystem());
+builder.Services.AddActorRegistration<GreeterActorRegistration>();
+builder.Setup<ExampleActorSystem>();
 await builder.Build().RunAsync();
 ```
 
@@ -72,4 +73,4 @@ Terp.Akka does not hide Akka.Hosting. Inside `BuildSystem` you use the normal `A
 
 ## Not included
 
-Terp.Akka has no contributor setups, no cluster or sharding abstraction and no actor base classes. Actors are registered in `BuildSystem`. The [entity region](/akka/entity-region) provides local child-per-entity routing with the same passivation protocol as Akka Cluster Sharding, so you can migrate later.
+Terp.Akka has no cluster or sharding abstraction and no actor base classes. Libraries can declare their actors via [`IActorRegistration`](/akka/actor-registration), and the host dispatches them in `BuildSystem` with `ApplyRegistrations`. The [entity region](/akka/entity-region) provides local child-per-entity routing with the same passivation protocol as Akka Cluster Sharding, so you can migrate later.

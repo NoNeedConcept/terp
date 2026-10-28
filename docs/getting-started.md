@@ -35,7 +35,7 @@ using Terp.Hosting.Gates;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-builder.Setup(new GreetingSetup());                                  // runs immediately
+builder.Setup<GreetingSetup>();                                      // runs immediately
 builder.Services.AddStartupGate("greeting", ct => Task.FromResult(true));
 
 using var meter = new Meter("MyApp");

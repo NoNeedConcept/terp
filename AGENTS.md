@@ -22,7 +22,7 @@ Namespaces: `Terp` has `Terp.Diagnostics` (metrics helpers: `TimerScope`, `TimeA
 `Terp.Threading` (`AsyncLock`, `AsyncLockScope`),
 `Terp.Hosting` (`ISetup`, `ISetup<T>`, `SetupContext`, `SetupExtensions`, `ApplicationSetupExtensions`) and `Terp.Hosting.Gates` (`IStartupGate`, `AddStartupGate`).
 A typical host needs `using Terp.Hosting;` plus `Terp.Hosting.Gates` at most.
-`Terp.Akka` holds the Akka setup, actor helpers and `EntityRegionActor` (child-per-entity routing with passivation, `Passivate`, `IEntityMessageExtractor`, `WithEntityRegion<TKey>`).
+`Terp.Akka` holds the Akka setup, `IActorRegistration` (modular actor topology), actor helpers and `EntityRegionActor` (child-per-entity routing with passivation, `Passivate`, `IEntityMessageExtractor`, `WithEntityRegion<TKey>`).
 There are exactly two packages (`Terp` <- `Terp.Akka`); new functionality goes into one of them.
 
 ## Build & test
@@ -73,7 +73,8 @@ Always use the solution file, never individual csproj files.
 - Startup gates (`Terp.Hosting.Gates`): `IStartupGate`, `AddStartupGate<T>()`, `AddStartupGate(name, check)`; one internal hosted service polls the open gates in `StartingAsync` with `Terp.Resilience.Backoff`
   and fixed constants (1 s initial, 30 s max, 10 s per check). No options.
 - `ActorSystemSetup` (Terp.Akka, abstract, `ISetup<IServiceCollection>`) owns the one actor system: abstract `ActorSystemName` (validated eagerly) and `BuildSystem(AkkaConfigurationBuilder, IServiceProvider)`.
-  Domain actors are added in `BuildSystem`; there are no contributor setups.
+  Domain actors are added in `BuildSystem`. Libraries declare actors via `IActorRegistration` (registered as `AddSingleton<IActorRegistration>` or `AddActorRegistration<T>()`);
+  the host dispatches them with `builder.ApplyRegistrations(provider)` at the desired point in `BuildSystem`. There are no general contributor setups for `ISetup<T>` targets.
 
 ## C# conventions
 

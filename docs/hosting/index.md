@@ -37,8 +37,8 @@ The last row, and any other `IHost`, is applied with `app.Setup(...)` after `Bui
 var builder = WebApplication.CreateBuilder(args);
 
 builder
-    .Setup(new LoggingSetup())
-    .Setup(new ServicesSetup());
+    .Setup<LoggingSetup>()
+    .Setup<ServicesSetup>();
 
 var app = builder.Build();
 app.Setup(new MapEndpoints());           // MapEndpoints : ISetup<WebApplication>

@@ -123,7 +123,7 @@ internal sealed class DemoSetup
     public void Setup(IServiceCollection services, SetupContext context) { /* registrations */ }
 }
 
-builder.Setup(new DemoSetup());
+builder.Setup<DemoSetup>();
 ```
 
 The targets run in the fixed order configuration, logging, services, metrics, builder. A class can also combine builder targets with `ISetup<WebApplication>`. `builder.Setup` runs the builder-side parts, and `app.Setup` runs the post-build part:
@@ -138,9 +138,9 @@ internal sealed class ReportsSetup : ISetup<IServiceCollection>, ISetup<WebAppli
         app.MapGet("/reports", (ReportService reports) => reports.List());
 }
 
-builder.Setup(new ReportsSetup());
+builder.Setup<ReportsSetup>();
 // ...
-app.Setup(new ReportsSetup());
+app.Setup(new ReportsSetup());  // post-build: same instance or new one
 ```
 
 ::: info Two instances
