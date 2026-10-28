@@ -18,6 +18,33 @@ namespace Terp
 }
 namespace Terp.Diagnostics
 {
+    public static class CounterExtensions
+    {
+        public static void Down<T>(this System.Diagnostics.Metrics.UpDownCounter<T> counter)
+            where T :  struct, System.Numerics.INumber<T> { }
+        public static void Down<T>(this System.Diagnostics.Metrics.UpDownCounter<T> counter, System.Collections.Generic.KeyValuePair<string, object?> tag)
+            where T :  struct, System.Numerics.INumber<T> { }
+        public static void Down<T>(this System.Diagnostics.Metrics.UpDownCounter<T> counter, System.ReadOnlySpan<System.Collections.Generic.KeyValuePair<string, object?>> tags)
+            where T :  struct, System.Numerics.INumber<T> { }
+        public static void Down<T>(this System.Diagnostics.Metrics.UpDownCounter<T> counter, System.Collections.Generic.KeyValuePair<string, object?> tag1, System.Collections.Generic.KeyValuePair<string, object?> tag2)
+            where T :  struct, System.Numerics.INumber<T> { }
+        public static void Up<T>(this System.Diagnostics.Metrics.Counter<T> counter)
+            where T :  struct, System.Numerics.INumber<T> { }
+        public static void Up<T>(this System.Diagnostics.Metrics.UpDownCounter<T> counter)
+            where T :  struct, System.Numerics.INumber<T> { }
+        public static void Up<T>(this System.Diagnostics.Metrics.Counter<T> counter, System.Collections.Generic.KeyValuePair<string, object?> tag)
+            where T :  struct, System.Numerics.INumber<T> { }
+        public static void Up<T>(this System.Diagnostics.Metrics.Counter<T> counter, System.ReadOnlySpan<System.Collections.Generic.KeyValuePair<string, object?>> tags)
+            where T :  struct, System.Numerics.INumber<T> { }
+        public static void Up<T>(this System.Diagnostics.Metrics.UpDownCounter<T> counter, System.Collections.Generic.KeyValuePair<string, object?> tag)
+            where T :  struct, System.Numerics.INumber<T> { }
+        public static void Up<T>(this System.Diagnostics.Metrics.UpDownCounter<T> counter, System.ReadOnlySpan<System.Collections.Generic.KeyValuePair<string, object?>> tags)
+            where T :  struct, System.Numerics.INumber<T> { }
+        public static void Up<T>(this System.Diagnostics.Metrics.Counter<T> counter, System.Collections.Generic.KeyValuePair<string, object?> tag1, System.Collections.Generic.KeyValuePair<string, object?> tag2)
+            where T :  struct, System.Numerics.INumber<T> { }
+        public static void Up<T>(this System.Diagnostics.Metrics.UpDownCounter<T> counter, System.Collections.Generic.KeyValuePair<string, object?> tag1, System.Collections.Generic.KeyValuePair<string, object?> tag2)
+            where T :  struct, System.Numerics.INumber<T> { }
+    }
     public static class HistogramTimerExtensions
     {
         public static Terp.Diagnostics.TimerScope StartTimer(this System.Diagnostics.Metrics.Histogram<double> histogram, System.TimeProvider? timeProvider = null) { }
