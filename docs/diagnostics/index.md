@@ -58,6 +58,28 @@ Write `new KeyValuePair<string, object?>("source", "cache")`. A target-typed `ne
 
 `TimerScope` is a mutable struct (zero allocation). Use it directly in a `using` statement. Do not copy or box it.
 
+## Increment counters with Up and Down
+
+`CounterExtensions` adds `.Up()` and `.Down()` to the BCL counter types.
+
+```csharp
+var meter = new Meter("MyApp");
+var requests = meter.CreateCounter<long>("myapp.requests");
+var connections = meter.CreateUpDownCounter<int>("myapp.connections");
+
+requests.Up();                                                        // +1, no tags
+requests.Up(new KeyValuePair<string, object?>("api", "tmdb"));        // +1, one tag
+requests.Up(new("api", "tmdb"), new("status", "hit"));                // +1, two tags
+
+connections.Up();     // +1
+connections.Down();   // −1
+connections.Down(new KeyValuePair<string, object?>("reason", "timeout"));
+```
+
+`.Down()` is only available on `UpDownCounter<T>`. A monotonic `Counter<T>` exposes only `.Up()` — the type system enforces the OpenTelemetry rule that counters must not decrease.
+
+Each method has overloads for no tags, one tag, two tags and `ReadOnlySpan<KeyValuePair<string, object?>>`, matching the `StartTimer` overloads above.
+
 ## Tag the HTTP client metrics
 
 .NET records `http.client.request.duration` on the meter `System.Net.Http` for every `HttpClient` request. `TerpHttpMetricsHandler` adds two custom tags to those measurements:

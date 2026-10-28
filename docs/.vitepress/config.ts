@@ -122,13 +122,16 @@ export default defineConfig({
         ]
       },
       {
-        text: 'Terp helpers',
+        text: 'Observability',
         items: [
-          { text: 'Diagnostics', link: '/diagnostics/' },
-          { text: 'Resilience', link: '/resilience/' },
-          { text: 'Network', link: '/network/' },
-          { text: 'DateTime', link: '/datetime/' },
-          { text: 'Threading', link: '/threading/' }
+          { text: 'Overview', link: '/diagnostics/' }
+        ]
+      },
+      {
+        text: 'Utilities',
+        items: [
+          { text: 'Resilience', link: '/utilities/resilience' },
+          { text: 'Helpers', link: '/utilities/helpers' }
         ]
       },
       {

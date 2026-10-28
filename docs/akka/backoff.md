@@ -64,4 +64,4 @@ var props = Props.Create<PollWorker>()
 While the child is down, messages to the supervisor are not delivered to it and end up in dead letters. `src/Terp.Akka.Example` sends the message again until the child answers.
 :::
 
-For delay calculation outside Akka see [Resilience](/resilience/).
+For delay calculation outside Akka see [Resilience](/utilities/resilience).

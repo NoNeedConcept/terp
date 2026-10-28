@@ -70,7 +70,7 @@ The timing is fixed in the code and cannot be configured.
 | Maximum retry delay | 30 seconds |
 | Time limit for one check | 10 seconds |
 
-All open gates are checked in parallel. After a round with open gates the service waits (1 s, 2 s, 4 s, 8 s, 16 s, then 30 s) and checks the open gates again. A gate that returned `true` is not checked again. The delays come from `Terp.Resilience.Backoff` without jitter; see [Resilience](/resilience/).
+All open gates are checked in parallel. After a round with open gates the service waits (1 s, 2 s, 4 s, 8 s, 16 s, then 30 s) and checks the open gates again. A gate that returned `true` is not checked again. The delays come from `Terp.Resilience.Backoff` without jitter; see [Resilience](/utilities/resilience).
 
 ## What a gate may do
 
