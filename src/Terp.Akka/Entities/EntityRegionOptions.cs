@@ -1,4 +1,4 @@
-namespace Terp.Akka;
+namespace Terp.Akka.Entities;
 
 /// <summary>
 /// Configuration for an <see cref="EntityRegionActor"/>: passivation, restart limits and entity caps.

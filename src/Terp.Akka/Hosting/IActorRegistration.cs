@@ -1,6 +1,6 @@
 using Akka.Hosting;
 
-namespace Terp.Akka;
+namespace Terp.Akka.Hosting;
 
 /// <summary>
 /// Allows a library to declare its actor topology without the host knowing the actor types directly.

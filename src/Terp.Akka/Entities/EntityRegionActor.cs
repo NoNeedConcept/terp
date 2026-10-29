@@ -2,7 +2,7 @@ using Akka.Actor;
 using Akka.Cluster.Sharding;
 using Akka.Event;
 
-namespace Terp.Akka;
+namespace Terp.Akka.Entities;
 
 /// <summary>
 /// A parent actor that routes messages to per-entity child actors by entity identity.

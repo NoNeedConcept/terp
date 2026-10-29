@@ -2,6 +2,7 @@ using Akka.Actor;
 using Akka.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Terp.Akka.Hosting;
 using Terp.Hosting;
 
 namespace Terp.Akka.Tests;

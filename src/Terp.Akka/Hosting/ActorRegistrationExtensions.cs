@@ -1,7 +1,7 @@
 using Akka.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Terp.Akka;
+namespace Terp.Akka.Hosting;
 
 /// <summary>
 /// Extension methods for registering and applying <see cref="IActorRegistration"/> instances.

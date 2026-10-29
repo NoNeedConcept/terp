@@ -2,19 +2,6 @@
 [assembly: System.Runtime.Versioning.TargetFramework(".NETCoreApp,Version=v10.0", FrameworkDisplayName=".NET 10.0")]
 namespace Terp.Akka
 {
-    public static class ActorRegistrationExtensions
-    {
-        public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddActorRegistration<T>(this Microsoft.Extensions.DependencyInjection.IServiceCollection services)
-            where T :  class, Terp.Akka.IActorRegistration, new () { }
-        public static Akka.Hosting.AkkaConfigurationBuilder ApplyRegistrations(this Akka.Hosting.AkkaConfigurationBuilder builder, System.IServiceProvider provider) { }
-    }
-    public abstract class ActorSystemSetup : Terp.Hosting.ISetup, Terp.Hosting.ISetup<Microsoft.Extensions.DependencyInjection.IServiceCollection>
-    {
-        protected ActorSystemSetup() { }
-        protected abstract string ActorSystemName { get; }
-        protected abstract void BuildSystem(Akka.Hosting.AkkaConfigurationBuilder builder, System.IServiceProvider serviceProvider);
-        public void Setup(Microsoft.Extensions.DependencyInjection.IServiceCollection services, Terp.Hosting.SetupContext context) { }
-    }
     public static class AkkaOptionsExtensions
     {
         public static void Match<T>(this Akka.Util.Option<T> option, System.Action<T> some, System.Action none) { }
@@ -30,36 +17,6 @@ namespace Terp.Akka
         public static bool ChildForward(this Akka.Actor.IActorContext context, string name, object message) { }
         public static bool ChildTell(this Akka.Actor.IActorContext context, string name, object message) { }
         public static Akka.Util.Option<Akka.Actor.IActorRef> GetChild(this Akka.Actor.IActorContext context, string name) { }
-    }
-    public sealed class EntityIdExtractor : Akka.Cluster.Sharding.HashCodeMessageExtractor
-    {
-        public EntityIdExtractor(int maxNumberOfShards) { }
-        public static Terp.Akka.EntityIdExtractor Instance { get; }
-        public override string? EntityId(object message) { }
-    }
-    public sealed class EntityRegionActor : Akka.Actor.ReceiveActor, Akka.Actor.IWithTimers
-    {
-        public EntityRegionActor(System.Func<Akka.Actor.IActorContext, string, Akka.Actor.IActorRef> entityFactory, Akka.Cluster.Sharding.IMessageExtractor extractor, Terp.Akka.EntityRegionOptions options, string regionTag, System.TimeProvider? timeProvider = null) { }
-        public Akka.Actor.ITimerScheduler Timers { get; set; }
-        protected override void PreStart() { }
-    }
-    public static class EntityRegionExtensions
-    {
-        public static Akka.Hosting.AkkaConfigurationBuilder WithEntityRegion<TKey>(this Akka.Hosting.AkkaConfigurationBuilder builder, System.Func<Akka.DependencyInjection.IDependencyResolver, Akka.Actor.Props> entityPropsFactory, System.Action<Terp.Akka.EntityRegionOptions>? configure = null, Akka.Cluster.Sharding.IMessageExtractor? extractor = null) { }
-    }
-    public sealed class EntityRegionOptions : System.IEquatable<Terp.Akka.EntityRegionOptions>
-    {
-        public EntityRegionOptions() { }
-        public int MaxBufferedMessagesPerEntity { get; init; }
-        public int MaxEntities { get; init; }
-        public int MaxRestarts { get; init; }
-        public System.TimeSpan PassivationInterval { get; init; }
-        public System.TimeSpan PassivationTimeout { get; init; }
-        public System.TimeSpan RestartWindow { get; init; }
-    }
-    public interface IActorRegistration
-    {
-        void Configure(Akka.Hosting.AkkaConfigurationBuilder builder, System.IServiceProvider provider);
     }
     public interface IWithEntityId
     {
@@ -99,5 +56,54 @@ namespace Terp.Akka
             where TActor : Akka.Actor.ActorBase { }
         public static Akka.Actor.IActorRef ResolveChildActor<TActor>(this Akka.Actor.IActorContext context, string? name, System.Func<Akka.Actor.Props, Akka.Actor.Props> configure, params object[] args)
             where TActor : Akka.Actor.ActorBase { }
+    }
+}
+namespace Terp.Akka.Entities
+{
+    public sealed class EntityIdExtractor : Akka.Cluster.Sharding.HashCodeMessageExtractor
+    {
+        public EntityIdExtractor(int maxNumberOfShards) { }
+        public static Terp.Akka.Entities.EntityIdExtractor Instance { get; }
+        public override string? EntityId(object message) { }
+    }
+    public sealed class EntityRegionActor : Akka.Actor.ReceiveActor, Akka.Actor.IWithTimers
+    {
+        public EntityRegionActor(System.Func<Akka.Actor.IActorContext, string, Akka.Actor.IActorRef> entityFactory, Akka.Cluster.Sharding.IMessageExtractor extractor, Terp.Akka.Entities.EntityRegionOptions options, string regionTag, System.TimeProvider? timeProvider = null) { }
+        public Akka.Actor.ITimerScheduler Timers { get; set; }
+        protected override void PreStart() { }
+    }
+    public static class EntityRegionExtensions
+    {
+        public static Akka.Hosting.AkkaConfigurationBuilder WithEntityRegion<TKey>(this Akka.Hosting.AkkaConfigurationBuilder builder, System.Func<Akka.DependencyInjection.IDependencyResolver, Akka.Actor.Props> entityPropsFactory, System.Action<Terp.Akka.Entities.EntityRegionOptions>? configure = null, Akka.Cluster.Sharding.IMessageExtractor? extractor = null) { }
+    }
+    public sealed class EntityRegionOptions : System.IEquatable<Terp.Akka.Entities.EntityRegionOptions>
+    {
+        public EntityRegionOptions() { }
+        public int MaxBufferedMessagesPerEntity { get; init; }
+        public int MaxEntities { get; init; }
+        public int MaxRestarts { get; init; }
+        public System.TimeSpan PassivationInterval { get; init; }
+        public System.TimeSpan PassivationTimeout { get; init; }
+        public System.TimeSpan RestartWindow { get; init; }
+    }
+}
+namespace Terp.Akka.Hosting
+{
+    public static class ActorRegistrationExtensions
+    {
+        public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddActorRegistration<T>(this Microsoft.Extensions.DependencyInjection.IServiceCollection services)
+            where T :  class, Terp.Akka.Hosting.IActorRegistration, new () { }
+        public static Akka.Hosting.AkkaConfigurationBuilder ApplyRegistrations(this Akka.Hosting.AkkaConfigurationBuilder builder, System.IServiceProvider provider) { }
+    }
+    public abstract class ActorSystemSetup : Terp.Hosting.ISetup, Terp.Hosting.ISetup<Microsoft.Extensions.DependencyInjection.IServiceCollection>
+    {
+        protected ActorSystemSetup() { }
+        protected abstract string ActorSystemName { get; }
+        protected abstract void BuildSystem(Akka.Hosting.AkkaConfigurationBuilder builder, System.IServiceProvider serviceProvider);
+        public void Setup(Microsoft.Extensions.DependencyInjection.IServiceCollection services, Terp.Hosting.SetupContext context) { }
+    }
+    public interface IActorRegistration
+    {
+        void Configure(Akka.Hosting.AkkaConfigurationBuilder builder, System.IServiceProvider provider);
     }
 }

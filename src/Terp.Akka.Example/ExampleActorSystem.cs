@@ -1,4 +1,5 @@
 using Akka.Hosting;
+using Terp.Akka.Hosting;
 
 namespace Terp.Akka.Example;
 

@@ -3,7 +3,7 @@ using Akka.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Terp.Hosting;
 
-namespace Terp.Akka;
+namespace Terp.Akka.Hosting;
 
 /// <summary>
 /// Base class for the setup that owns the one <c>ActorSystem</c> of a host: it registers it via Akka.Hosting under

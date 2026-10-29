@@ -1,3 +1,5 @@
+using Terp.Akka.Entities;
+
 namespace Terp.Akka.Tests;
 
 public sealed class EntityIdExtractorTests

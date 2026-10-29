@@ -1,6 +1,6 @@
 using Akka.Cluster.Sharding;
 
-namespace Terp.Akka;
+namespace Terp.Akka.Entities;
 
 /// <summary>
 /// Default <see cref="IMessageExtractor"/> that casts messages to <see cref="IWithEntityId"/>.

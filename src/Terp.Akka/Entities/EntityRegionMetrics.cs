@@ -1,6 +1,6 @@
 using System.Diagnostics.Metrics;
 
-namespace Terp.Akka;
+namespace Terp.Akka.Entities;
 
 /// <summary>
 /// Metrics instruments for <see cref="EntityRegionActor"/>. All instruments live on a shared

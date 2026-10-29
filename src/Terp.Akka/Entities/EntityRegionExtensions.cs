@@ -3,7 +3,7 @@ using Akka.Cluster.Sharding;
 using Akka.DependencyInjection;
 using Akka.Hosting;
 
-namespace Terp.Akka;
+namespace Terp.Akka.Entities;
 
 /// <summary>
 /// Extension methods for registering an <see cref="EntityRegionActor"/> with Akka.Hosting.

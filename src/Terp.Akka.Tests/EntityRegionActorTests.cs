@@ -2,6 +2,7 @@ using System.Diagnostics.Metrics;
 using Akka.Actor;
 using Akka.Hosting;
 using Akka.Hosting.TestKit;
+using Terp.Akka.Entities;
 
 namespace Terp.Akka.Tests;
 

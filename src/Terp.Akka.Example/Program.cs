@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Terp.Akka;
+using Terp.Akka.Hosting;
 using Terp.Akka.Example;
 using Terp.Hosting;
 
