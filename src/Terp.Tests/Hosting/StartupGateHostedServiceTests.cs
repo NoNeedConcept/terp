@@ -49,7 +49,7 @@ public sealed class StartupGateHostedServiceTests
         }, checkTimeout ?? TimeSpan.FromSeconds(10));
     }
 
-    [Fact]
+    [Fact(Timeout = 5000)]
     public async Task StartingAsync_RepeatedFailures_DelayGrowsExponentiallyUpToCap()
     {
         List<TimeSpan> delays = [];
@@ -67,7 +67,7 @@ public sealed class StartupGateHostedServiceTests
             delays);
     }
 
-    [Fact]
+    [Fact(Timeout = 5000)]
     public async Task StartingAsync_ClearedGate_IsNotCheckedAgain()
     {
         int firstCalls = 0, secondCalls = 0;
@@ -81,7 +81,7 @@ public sealed class StartupGateHostedServiceTests
         Assert.Equal(3, secondCalls);
     }
 
-    [Fact]
+    [Fact(Timeout = 5000)]
     public async Task StartingAsync_OpenAndClearedGates_WarningNamesOnlyOpenGate()
     {
         var logger = new CapturingLogger();
@@ -97,7 +97,7 @@ public sealed class StartupGateHostedServiceTests
         Assert.DoesNotContain("ready-gate", warning, StringComparison.Ordinal);
     }
 
-    [Fact]
+    [Fact(Timeout = 5000)]
     public async Task StartingAsync_CancelledWhileGatesOpen_ThrowsNamingOpenGates()
     {
         using var cts = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
@@ -116,7 +116,7 @@ public sealed class StartupGateHostedServiceTests
         Assert.IsAssignableFrom<OperationCanceledException>(ex.InnerException);
     }
 
-    [Fact]
+    [Fact(Timeout = 5000)]
     public async Task StartingAsync_HangingCheckWithTimeout_TreatsAsNotClearAndRetries()
     {
         var logger = new CapturingLogger();
@@ -131,7 +131,7 @@ public sealed class StartupGateHostedServiceTests
         Assert.Contains(logger.Messages, m => m.Contains("timed out", StringComparison.Ordinal) && m.Contains("hangs-once", StringComparison.Ordinal));
     }
 
-    [Fact]
+    [Fact(Timeout = 5000)]
     public async Task StartingAsync_ThrowingGate_LogsGateName()
     {
         var logger = new CapturingLogger();
@@ -144,7 +144,7 @@ public sealed class StartupGateHostedServiceTests
         Assert.Contains(logger.Messages, m => m.Contains("thrower", StringComparison.Ordinal) && m.Contains("threw", StringComparison.Ordinal));
     }
 
-    [Fact]
+    [Fact(Timeout = 5000)]
     public async Task StartingAsync_NoGates_CompletesImmediately()
     {
         var service = Create([]);

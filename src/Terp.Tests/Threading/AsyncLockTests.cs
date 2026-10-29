@@ -4,7 +4,7 @@ namespace Terp.Tests.Threading;
 
 public sealed class AsyncLockTests
 {
-    [Fact]
+    [Fact(Timeout = 5000)]
     public async Task AcquireAsync_Uncontended_ReturnsSynchronously()
     {
         using var sut = new AsyncLock();
@@ -16,7 +16,7 @@ public sealed class AsyncLockTests
         scope.Dispose();
     }
 
-    [Fact]
+    [Fact(Timeout = 5000)]
     public async Task AcquireAsync_Contended_WaitsUntilReleased()
     {
         using var sut = new AsyncLock();
@@ -33,7 +33,7 @@ public sealed class AsyncLockTests
         second.Dispose();
     }
 
-    [Fact]
+    [Fact(Timeout = 5000)]
     public async Task AcquireAsync_Cancelled_ThrowsOperationCanceledException()
     {
         using var sut = new AsyncLock();
@@ -51,7 +51,7 @@ public sealed class AsyncLockTests
         first.Dispose();
     }
 
-    [Fact]
+    [Fact(Timeout = 5000)]
     public async Task AcquireAsync_AfterDispose_ThrowsObjectDisposedException()
     {
         var sut = new AsyncLock();
@@ -61,7 +61,7 @@ public sealed class AsyncLockTests
             await sut.AcquireAsync(TestContext.Current.CancellationToken));
     }
 
-    [Fact]
+    [Fact(Timeout = 5000)]
     public async Task Dispose_ReleasesScope()
     {
         using var sut = new AsyncLock();
@@ -76,7 +76,7 @@ public sealed class AsyncLockTests
         scope2.Dispose();
     }
 
-    [Fact]
+    [Fact(Timeout = 5000)]
     public async Task MutualExclusion_SequentialAccess()
     {
         using var sut = new AsyncLock();

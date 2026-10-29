@@ -2,9 +2,10 @@ using System.Diagnostics.Metrics;
 using Akka.Actor;
 using Akka.Hosting;
 using Akka.Hosting.TestKit;
+using Microsoft.Extensions.Time.Testing;
 using Terp.Akka.Entities;
 
-namespace Terp.Akka.Tests;
+namespace Terp.Akka.Tests.Entities;
 
 public sealed class EntityRegionActorTests : TestKit
 {
@@ -99,8 +100,8 @@ public sealed class EntityRegionActorTests : TestKit
             await ExpectMsgAsync<EchoResponse>(cancellationToken: ct)
         };
 
-        Assert.Contains(responses, r => r.EntityId == "a" && r.Payload == "msg-a");
-        Assert.Contains(responses, r => r.EntityId == "b" && r.Payload == "msg-b");
+        Assert.Contains(responses, r => r is { EntityId: "a", Payload: "msg-a" });
+        Assert.Contains(responses, r => r is { EntityId: "b", Payload: "msg-b" });
     }
 
     [Fact(Timeout = 10000)]
@@ -118,21 +119,28 @@ public sealed class EntityRegionActorTests : TestKit
     [Fact(Timeout = 10000)]
     public async Task Passivation_IdleEntity_IsStopped()
     {
+        var timeProvider = new FakeTimeProvider();
         var options = new EntityRegionOptions
         {
             PassivationTimeout = TimeSpan.FromMilliseconds(100),
             PassivationInterval = TimeSpan.FromMilliseconds(50)
         };
-        var region = CreateRegion(options);
+        var region = CreateRegion(options, timeProvider);
+        var ct = TestContext.Current.CancellationToken;
 
         region.Tell(new TestCommand("idle-1", "hi"), TestActor);
-        await ExpectMsgAsync<EchoResponse>(cancellationToken: TestContext.Current.CancellationToken);
+        await ExpectMsgAsync<EchoResponse>(cancellationToken: ct);
 
-        var ct = TestContext.Current.CancellationToken;
-        await Task.Delay(500, ct);
+        var entityRef = await Sys.ActorSelection(region.Path / "idle-1")
+            .ResolveOne(TimeSpan.FromSeconds(3), ct);
+        var probe = CreateTestProbe();
+        probe.Watch(entityRef);
+
+        timeProvider.Advance(TimeSpan.FromMilliseconds(200));
+        await probe.ExpectTerminatedAsync(entityRef, cancellationToken: ct);
 
         region.Tell(new TestCommand("idle-1", "after"), TestActor);
-        var afterResponse = await ExpectMsgAsync<EchoResponse>(cancellationToken: TestContext.Current.CancellationToken);
+        var afterResponse = await ExpectMsgAsync<EchoResponse>(cancellationToken: ct);
         Assert.Equal("after", afterResponse.Payload);
     }
 
@@ -164,12 +172,20 @@ public sealed class EntityRegionActorTests : TestKit
         region.Tell(new TestCommand("x", "first"), TestActor);
         await ExpectMsgAsync<EchoResponse>(cancellationToken: ct);
 
-        region.Tell(new CrashCommand("x"));
-        await Task.Delay(200, ct);
+        var entityRef = await Sys.ActorSelection(region.Path / "x")
+            .ResolveOne(TimeSpan.FromSeconds(3), ct);
+        var probe = CreateTestProbe();
+        probe.Watch(entityRef);
 
-        region.Tell(new TestCommand("x", "after-crash"), TestActor);
-        var response = await ExpectMsgAsync<EchoResponse>(cancellationToken: ct);
-        Assert.Equal("after-crash", response.Payload);
+        region.Tell(new CrashCommand("x"));
+        await probe.ExpectTerminatedAsync(entityRef, cancellationToken: ct);
+
+        await AwaitAssertAsync(async () =>
+        {
+            region.Tell(new TestCommand("x", "after-crash"), TestActor);
+            var response = await ExpectMsgAsync<EchoResponse>(TimeSpan.FromMilliseconds(300), cancellationToken: ct);
+            Assert.Equal("after-crash", response.Payload);
+        }, cancellationToken: ct);
     }
 
     [Fact(Timeout = 10000)]
@@ -186,12 +202,30 @@ public sealed class EntityRegionActorTests : TestKit
 
         for (var i = 0; i < 2; i++)
         {
+            var entityRef = await Sys.ActorSelection(region.Path / "y")
+                .ResolveOne(TimeSpan.FromSeconds(3), ct);
+            var probe = CreateTestProbe();
+            probe.Watch(entityRef);
+
             region.Tell(new CrashCommand("y"));
-            await Task.Delay(200, ct);
+            await probe.ExpectTerminatedAsync(entityRef, cancellationToken: ct);
+
+            if (i < 1)
+            {
+                await AwaitAssertAsync(async () =>
+                {
+                    region.Tell(new TestCommand("y", "alive"), TestActor);
+                    await ExpectMsgAsync<EchoResponse>(TimeSpan.FromMilliseconds(300), cancellationToken: ct);
+                }, cancellationToken: ct);
+            }
         }
 
-        region.Tell(new TestCommand("y", "should-be-dead"), TestActor);
-        await deadLetterProbe.ExpectMsgAsync<global::Akka.Event.DeadLetter>(cancellationToken: ct);
+        await AwaitAssertAsync(async () =>
+        {
+            region.Tell(new TestCommand("y", "should-be-dead"), TestActor);
+            await deadLetterProbe.ExpectMsgAsync<global::Akka.Event.DeadLetter>(
+                TimeSpan.FromMilliseconds(300), cancellationToken: ct);
+        }, cancellationToken: ct);
     }
 
     [Fact(Timeout = 10000)]
@@ -206,8 +240,6 @@ public sealed class EntityRegionActorTests : TestKit
         await ExpectMsgAsync<EchoResponse>(cancellationToken: ct);
 
         region.Tell(EntityRegionActor.StartDrainCommand.Instance);
-        await Task.Delay(100, ct);
-
         region.Tell(new TestCommand("new-entity", "after-drain"), TestActor);
         await deadLetterProbe.ExpectMsgAsync<global::Akka.Event.DeadLetter>(cancellationToken: ct);
     }
@@ -244,14 +276,14 @@ public sealed class EntityRegionActorTests : TestKit
                 meterListener.EnableMeasurementEvents(instrument);
             }
         };
-        listener.SetMeasurementEventCallback<int>((instrument, value, tags, _) =>
+        listener.SetMeasurementEventCallback<int>((instrument, value, _, _) =>
         {
             if (instrument.Name == "entity_region.active_entities")
             {
                 activeDeltas.Add(value);
             }
         });
-        listener.SetMeasurementEventCallback<long>((instrument, value, tags, _) =>
+        listener.SetMeasurementEventCallback<long>((instrument, value, _, _) =>
         {
             if (instrument.Name == "entity_region.passivations")
             {
@@ -260,12 +292,13 @@ public sealed class EntityRegionActorTests : TestKit
         });
         listener.Start();
 
+        var timeProvider = new FakeTimeProvider();
         var options = new EntityRegionOptions
         {
             PassivationTimeout = TimeSpan.FromMilliseconds(100),
             PassivationInterval = TimeSpan.FromMilliseconds(50)
         };
-        var region = CreateRegion(options);
+        var region = CreateRegion(options, timeProvider);
         var ct = TestContext.Current.CancellationToken;
 
         region.Tell(new TestCommand("m1", "hi"), TestActor);
@@ -274,9 +307,15 @@ public sealed class EntityRegionActorTests : TestKit
         listener.RecordObservableInstruments();
         Assert.Contains(1, activeDeltas);
 
-        await Task.Delay(500, ct);
-        listener.RecordObservableInstruments();
+        var entityRef = await Sys.ActorSelection(region.Path / "m1")
+            .ResolveOne(TimeSpan.FromSeconds(3), ct);
+        var probe = CreateTestProbe();
+        probe.Watch(entityRef);
 
+        timeProvider.Advance(TimeSpan.FromMilliseconds(200));
+        await probe.ExpectTerminatedAsync(entityRef, cancellationToken: ct);
+
+        listener.RecordObservableInstruments();
         Assert.Contains(-1, activeDeltas);
         Assert.True(Interlocked.Read(ref passivationCount) >= 1);
     }

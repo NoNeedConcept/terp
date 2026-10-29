@@ -84,19 +84,21 @@ public sealed class RegistryExtensionsTests : TestKit
         Assert.Throws<MissingActorRegistryEntryException>(() => Sys.GetActor<UnregisteredKey>());
     }
 
-    [Fact]
+    [Fact(Timeout = 10000)]
     public async Task GetActor_ContextWithRegisteredActor_ReturnsRegisteredActor()
     {
-        var result = await InContext(ctx => ctx.GetActor<RegisteredKey>());
+        var result = await InContext(ctx => ctx.GetActor<RegisteredKey>())
+            .WaitAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(Registered, result);
     }
 
-    [Fact]
+    [Fact(Timeout = 10000)]
     public async Task GetActor_ContextWithUnregisteredActor_ThrowsMissingActorRegistryEntryException()
     {
-        // Ask surfaces the Status.Failure sent back by the actor as the original exception.
-        await Assert.ThrowsAsync<MissingActorRegistryEntryException>(() => InContext(ctx => ctx.GetActor<UnregisteredKey>()));
+        var ct = TestContext.Current.CancellationToken;
+        await Assert.ThrowsAsync<MissingActorRegistryEntryException>(
+            () => InContext(ctx => ctx.GetActor<UnregisteredKey>()).WaitAsync(ct));
     }
 
     [Fact]
@@ -113,7 +115,7 @@ public sealed class RegistryExtensionsTests : TestKit
         Assert.Equal(ActorRefs.Nobody, actor);
     }
 
-    [Fact]
+    [Fact(Timeout = 10000)]
     public async Task TryGetActor_ContextRegisteredAndUnregistered_FindsRegisteredOnly()
     {
         var result = await InContext(ctx =>
@@ -121,7 +123,7 @@ public sealed class RegistryExtensionsTests : TestKit
             var found = ctx.TryGetActor<RegisteredKey>(out var actor);
             var missing = ctx.TryGetActor<UnregisteredKey>(out var none);
             return (found, actor, missing, none);
-        });
+        }).WaitAsync(TestContext.Current.CancellationToken);
 
         var (found, actor, missing, none) = ((bool, IActorRef, bool, IActorRef))result;
         Assert.True(found);
@@ -140,7 +142,7 @@ public sealed class RegistryExtensionsTests : TestKit
         Assert.Equal(ActorRefs.Nobody, none);
     }
 
-    [Fact]
+    [Fact(Timeout = 10000)]
     public async Task TryGetActor_ContextByTypeRegisteredAndUnregistered_FindsRegisteredOnly()
     {
         var result = await InContext(ctx =>
@@ -148,7 +150,7 @@ public sealed class RegistryExtensionsTests : TestKit
             var found = ctx.TryGetActor(typeof(RegisteredKey), out var actor);
             var missing = ctx.TryGetActor(typeof(UnregisteredKey), out var none);
             return (found, actor, missing, none);
-        });
+        }).WaitAsync(TestContext.Current.CancellationToken);
 
         var (found, actor, missing, none) = ((bool, IActorRef, bool, IActorRef))result;
         Assert.True(found);
@@ -157,15 +159,16 @@ public sealed class RegistryExtensionsTests : TestKit
         Assert.Equal(ActorRefs.Nobody, none);
     }
 
-    [Fact]
+    [Fact(Timeout = 10000)]
     public async Task GetActorAsync_SystemWithRegisteredActor_ReturnsRegisteredActor()
     {
-        var actor = await Sys.GetActorAsync<RegisteredKey>();
+        var actor = await Sys.GetActorAsync<RegisteredKey>()
+            .WaitAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(Registered, actor);
     }
 
-    [Fact]
+    [Fact(Timeout = 10000)]
     public async Task GetActorAsync_ContextWithRegisteredActor_ReturnsRegisteredActor()
     {
         var actor = await Sys.GetActor<ContextActor>()
@@ -174,7 +177,7 @@ public sealed class RegistryExtensionsTests : TestKit
         Assert.Equal(Registered, actor);
     }
 
-    [Fact]
+    [Fact(Timeout = 10000)]
     public async Task GetActorAsync_SystemActorRegisteredLater_CompletesOnceRegistered()
     {
         var pending = Sys.GetActorAsync<LateKey>();
@@ -187,7 +190,7 @@ public sealed class RegistryExtensionsTests : TestKit
         Assert.Equal(late, actor);
     }
 
-    [Fact]
+    [Fact(Timeout = 10000)]
     public async Task GetActorAsync_ContextActorRegisteredLater_CompletesOnceRegistered()
     {
         var pending = Sys.GetActor<ContextActor>()
@@ -204,8 +207,8 @@ public sealed class RegistryExtensionsTests : TestKit
     [Fact]
     public void RegistryExtensions_NullContextSystemOrKey_ThrowsArgumentNullException()
     {
-        var context = (IActorContext)null!;
-        var system = (ActorSystem)null!;
+        IActorContext context = null!;
+        ActorSystem system = null!;
 
         AssertParamName("context", () => context.GetActor<RegisteredKey>());
         AssertParamName("system", () => system.GetActor<RegisteredKey>());

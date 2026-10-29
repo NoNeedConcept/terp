@@ -48,7 +48,7 @@ public sealed class ResolveExtensionsTests : TestKit
         Assert.NotEqual(Nobody.Instance, actorRef);
     }
 
-    [Fact]
+    [Fact(Timeout = 10000)]
     public async Task ResolveChildActor_ConfigureCallback_DeliversMessagesToChild()
     {
         var parent = Sys.ResolveActor<TestParentActor>();

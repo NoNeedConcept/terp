@@ -84,7 +84,7 @@ public sealed class TerpHttpMetricsHandlerTests
         return new HttpClient(new TerpHttpMetricsHandler(api) { InnerHandler = inner });
     }
 
-    [Fact]
+    [Fact(Timeout = 10000)]
     public async Task GetAsync_SuccessResponse_CarriesApiTag()
     {
         using var meter = new Meter("test.http.ok");
@@ -101,7 +101,7 @@ public sealed class TerpHttpMetricsHandlerTests
             () => Assert.False(m.Tags.ContainsKey("error.type")));
     }
 
-    [Fact]
+    [Fact(Timeout = 10000)]
     public async Task GetAsync_ServerError_CarriesApiTagAndErrorType()
     {
         using var meter = new Meter("test.http.500");
@@ -118,7 +118,7 @@ public sealed class TerpHttpMetricsHandlerTests
             () => Assert.Equal("500", m.Tags["error.type"]));
     }
 
-    [Fact]
+    [Fact(Timeout = 10000)]
     public async Task GetAsync_ConnectionRefused_CarriesApiTagWithoutStatusCode()
     {
         using var meter = new Meter("test.http.conn");
@@ -154,7 +154,7 @@ public sealed class TerpHttpMetricsHandlerTests
         Assert.Equal("sync-api", Assert.Single(collector.For(Duration)).Tags[TerpHttpMetricsHandler.ApiTagName]);
     }
 
-    [Fact]
+    [Fact(Timeout = 10000)]
     public async Task GetAsync_WithoutHandler_HasNoApiTag()
     {
         using var meter = new Meter("test.http.plain");

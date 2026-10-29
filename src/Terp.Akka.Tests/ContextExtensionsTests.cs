@@ -48,7 +48,7 @@ public sealed class ContextExtensionsTests : TestKit
     {
     }
 
-    [Fact]
+    [Fact(Timeout = 10000)]
     public async Task ChildForward_ExistingChild_PreservesOriginalSender()
     {
         var parent = Sys.ResolveActor<TestParentActor>(ActorRefs.Nobody);
@@ -74,7 +74,7 @@ public sealed class ContextExtensionsTests : TestKit
         external.ExpectNoMsg(TimeSpan.FromMilliseconds(200), TestContext.Current.CancellationToken);
     }
 
-    [Fact]
+    [Fact(Timeout = 10000)]
     public async Task ChildTellAndChildForward_MissingChild_ReturnFalse()
     {
         var parent = Sys.ResolveActor<TestParentActor>(ActorRefs.Nobody);
@@ -83,7 +83,7 @@ public sealed class ContextExtensionsTests : TestKit
         Assert.False(await parent.Ask<bool>(new ForwardMissing(), TestContext.Current.CancellationToken));
     }
 
-    [Fact]
+    [Fact(Timeout = 10000)]
     public async Task GetChild_ExistingAndMissingChild_ReturnsChildOrNone()
     {
         var parent = Sys.ResolveActor<TestParentActor>(ActorRefs.Nobody);
