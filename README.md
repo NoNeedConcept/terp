@@ -9,9 +9,7 @@
 
 [![Terp on NuGet](https://img.shields.io/nuget/v/Terp.svg?style=flat-square&label=Terp)](https://www.nuget.org/packages/Terp)
 [![Terp.Akka on NuGet](https://img.shields.io/nuget/v/Terp.Akka.svg?style=flat-square&label=Terp.Akka)](https://www.nuget.org/packages/Terp.Akka)
-[![Downloads](https://img.shields.io/nuget/dt/Terp.svg?style=flat-square)](https://www.nuget.org/packages/Terp)
 [![License: MIT](https://img.shields.io/github/license/NoNeedConcept/terp.svg?style=flat-square)](https://github.com/NoNeedConcept/terp/blob/main/LICENSE)
-[![CI](https://img.shields.io/github/actions/workflow/status/NoNeedConcept/terp/ci.yml?style=flat-square&label=CI)](https://github.com/NoNeedConcept/terp/actions/workflows/ci.yml)
 [![Docs](https://img.shields.io/badge/docs-terp.noneedconcept.org-5C6B3E?style=flat-square)](https://terp.noneedconcept.org)
 
 </div>
@@ -19,7 +17,7 @@
 ---
 
 A *terp* is a Frisian dwelling mound: the artificial hill that keeps a home dry and gives it a place to stand.
-Terp follows the same idea -- a small, solid foundation you build your .NET applications on, and it stays out of your way.
+Terp follows the same idea: a small, solid foundation you build your .NET applications on. It stays out of your way.
 
 Terp is a project of [NoNeedConcept](https://github.com/NoNeedConcept).
 
@@ -32,7 +30,7 @@ Both packages share one version and are released together.
 | **`Terp`** | Host setups (`ISetup<T>`), startup gates, metrics helpers (`TimerScope`, `TerpHttpMetricsHandler`), exponential backoff, port finder, async lock, date helpers | Microsoft.Extensions abstractions only |
 | **`Terp.Akka`** | Actor system setup (`ActorSystemSetup`), actor resolving with DI, actor registry, backoff supervisors, context helpers, entity region actor | `Terp` + Akka.Hosting |
 
-`Terp` has no ASP.NET Core reference and no concrete host dependency -- it works with any host.
+`Terp` has no ASP.NET Core reference and no concrete host dependency. It works with any host.
 
 ## Installation
 
@@ -91,7 +89,7 @@ builder.Setup(new MyActorSystem());
 
 - A setup implements `ISetup<TTarget>` for each target it configures: `IConfigurationManager`, `ILoggingBuilder`, `IServiceCollection`, `IMetricsBuilder`, `IHostApplicationBuilder`, or `IHost`.
 - Inside one setup, targets run in a fixed order: configuration, logging, services, metrics, builder.
-- Across setups, `builder.Setup(...)` runs immediately -- call order is run order.
+- Across setups, `builder.Setup(...)` runs immediately. Call order is run order.
 - Dispatch uses pattern matching with no reflection. Trimming and Native AOT work out of the box.
 
 ## Samples
