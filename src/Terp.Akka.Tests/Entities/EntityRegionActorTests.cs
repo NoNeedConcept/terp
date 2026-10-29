@@ -315,8 +315,11 @@ public sealed class EntityRegionActorTests : TestKit
         timeProvider.Advance(TimeSpan.FromMilliseconds(200));
         await probe.ExpectTerminatedAsync(entityRef, cancellationToken: ct);
 
-        listener.RecordObservableInstruments();
-        Assert.Contains(-1, activeDeltas);
-        Assert.True(Interlocked.Read(ref passivationCount) >= 1);
+        await AwaitAssertAsync(() =>
+        {
+            listener.RecordObservableInstruments();
+            Assert.Contains(-1, activeDeltas);
+            Assert.True(Interlocked.Read(ref passivationCount) >= 1);
+        }, cancellationToken: ct);
     }
 }
