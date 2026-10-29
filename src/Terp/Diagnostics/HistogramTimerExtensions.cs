@@ -87,7 +87,8 @@ public static class HistogramTimerExtensions
     /// <param name="timeProvider">The time source; <see cref="TimeProvider.System"/> when <see langword="null"/>.</param>
     /// <returns>A scope that records on <see cref="TimerScope.Dispose"/>.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="histogram"/> is <see langword="null"/>.</exception>
-    public static TimerScope StartTimer(this Histogram<double> histogram, KeyValuePair<string, object?> tag, TimeProvider? timeProvider = null)
+    public static TimerScope StartTimer(this Histogram<double> histogram, KeyValuePair<string, object?> tag,
+        TimeProvider? timeProvider = null)
     {
         ArgumentNullException.ThrowIfNull(histogram);
         var tags = new TagList { tag };
@@ -101,7 +102,8 @@ public static class HistogramTimerExtensions
     /// <param name="timeProvider">The time source; <see cref="TimeProvider.System"/> when <see langword="null"/>.</param>
     /// <returns>A scope that records on <see cref="TimerScope.Dispose"/>.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="histogram"/> is <see langword="null"/>.</exception>
-    public static TimerScope StartTimer(this Histogram<double> histogram, KeyValuePair<string, object?> tag1, KeyValuePair<string, object?> tag2, TimeProvider? timeProvider = null)
+    public static TimerScope StartTimer(this Histogram<double> histogram, KeyValuePair<string, object?> tag1,
+        KeyValuePair<string, object?> tag2, TimeProvider? timeProvider = null)
     {
         ArgumentNullException.ThrowIfNull(histogram);
         var tags = new TagList { tag1, tag2 };
@@ -114,7 +116,8 @@ public static class HistogramTimerExtensions
     /// <param name="timeProvider">The time source; <see cref="TimeProvider.System"/> when <see langword="null"/>.</param>
     /// <returns>A scope that records on <see cref="TimerScope.Dispose"/>.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="histogram"/> is <see langword="null"/>.</exception>
-    public static TimerScope StartTimer(this Histogram<double> histogram, ReadOnlySpan<KeyValuePair<string, object?>> tags, TimeProvider? timeProvider = null)
+    public static TimerScope StartTimer(this Histogram<double> histogram,
+        ReadOnlySpan<KeyValuePair<string, object?>> tags, TimeProvider? timeProvider = null)
     {
         ArgumentNullException.ThrowIfNull(histogram);
         return new TimerScope(histogram, timeProvider ?? TimeProvider.System, new TagList(tags));

@@ -12,6 +12,4 @@ namespace Terp.Hosting;
 /// then <c>IServiceCollection</c>, then <c>IMetricsBuilder</c>, then the builder type itself (the full-access exception:
 /// <c>ISetup&lt;IHostApplicationBuilder&gt;</c> runs with every builder, <c>ISetup&lt;WebApplicationBuilder&gt;</c> receives the concrete type).
 /// </remarks>
-public interface ISetup
-{
-}
+public interface ISetup;

@@ -42,14 +42,15 @@ public static class StartupGateExtensions
     /// <param name="services">The service collection.</param>
     /// <returns>The service collection, for chaining.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="services"/> is <see langword="null"/>.</exception>
-    public static IServiceCollection AddStartupGate<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TGate>(
+    public static IServiceCollection AddStartupGate<
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TGate>(
         this IServiceCollection services)
         where TGate : class, IStartupGate
     {
         ArgumentNullException.ThrowIfNull(services);
 
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IStartupGate, TGate>());
-        return AddInfrastructure(services);
+        return services.AddInfrastructure();
     }
 
     /// <summary>Adds a gate implemented by a delegate.</summary>
@@ -67,12 +68,11 @@ public static class StartupGateExtensions
         ArgumentNullException.ThrowIfNull(check);
 
         services.AddSingleton<IStartupGate>(new DelegateStartupGate(name, check));
-        return AddInfrastructure(services);
+        return services.AddInfrastructure();
     }
 
-    private static IServiceCollection AddInfrastructure(IServiceCollection services)
+    private static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, StartupGateHostedService>());
-        return services;
+        return services.AddHostedService<StartupGateHostedService>();
     }
 }
