@@ -12,23 +12,25 @@ dotnet add package Terp.Akka
 ```
 
 ```csharp
-using Terp.Akka;
+using Terp.Akka;            // registry lookups, resolve, backoff, context, Option matching, IWithEntityId
+using Terp.Akka.Hosting;    // ActorSystemSetup, IActorRegistration
+using Terp.Akka.Entities;   // EntityRegionActor, WithEntityRegion, EntityIdExtractor
 ```
 
 ## What it adds
 
-| Piece | Purpose | Page |
-|-------|---------|------|
-| `ActorSystemSetup` | an `ISetup<IServiceCollection>` that owns the one actor system of a host | [Actor system](/akka/actor-system) |
-| `ResolveActor`, `ResolveChildActor` | create actors whose constructor dependencies come from DI | [Resolve actors](/akka/resolve) |
-| `GetActor`, `TryGetActor`, `GetActorAsync`, `GetRegistry` | look up actors in the Akka.Hosting registry | [Registry and context](/akka/registry) |
-| `GetChild`, `ChildTell`, `ChildForward` | find and message children of an actor context | [Registry and context](/akka/registry) |
-| `Match` on `Option<T>` | pattern-match Akka's `Option<T>` | [Registry and context](/akka/registry) |
-| `IWithEntityId` | marker for types that carry an entity id | [Registry and context](/akka/registry) |
-| `IActorRegistration`, `AddActorRegistration`, `ApplyRegistrations` | let libraries declare actors the host dispatches | [Actor registration](/akka/actor-registration) |
-| `BackoffOnFailure`, `BackoffOnStop` | wrap `Props` in a `BackoffSupervisor` with defaults | [Backoff helpers](/akka/backoff) |
-| `EntityRegionActor`, `WithEntityRegion` | route messages to per-entity children with passivation, restart limits and metrics | [Entity region](/akka/entity-region) |
-| `Passivate` | entity-initiated passivation, compatible with Akka Cluster Sharding | [Entity region](/akka/entity-region) |
+| Piece | Namespace | Purpose | Page |
+|-------|-----------|---------|------|
+| `ActorSystemSetup` | `Terp.Akka.Hosting` | an `ISetup<IServiceCollection>` that owns the one actor system of a host | [Actor system](/akka/actor-system) |
+| `ResolveActor`, `ResolveChildActor` | `Terp.Akka` | create actors whose constructor dependencies come from DI | [Resolve actors](/akka/resolve) |
+| `GetActor`, `TryGetActor`, `GetActorAsync`, `GetRegistry` | `Terp.Akka` | look up actors in the Akka.Hosting registry | [Registry and context](/akka/registry) |
+| `GetChild`, `ChildTell`, `ChildForward` | `Terp.Akka` | find and message children of an actor context | [Registry and context](/akka/registry) |
+| `Match` on `Option<T>` | `Terp.Akka` | pattern-match Akka's `Option<T>` | [Registry and context](/akka/registry) |
+| `IWithEntityId` | `Terp.Akka` | marker for types that carry an entity id | [Registry and context](/akka/registry) |
+| `IActorRegistration`, `AddActorRegistration`, `ApplyRegistrations` | `Terp.Akka.Hosting` | let libraries declare actors the host dispatches | [Actor registration](/akka/actor-registration) |
+| `BackoffOnFailure`, `BackoffOnStop` | `Terp.Akka` | wrap `Props` in a `BackoffSupervisor` with defaults | [Backoff helpers](/akka/backoff) |
+| `EntityRegionActor`, `WithEntityRegion` | `Terp.Akka.Entities` | route messages to per-entity children with passivation, restart limits and metrics | [Entity region](/akka/entity-region) |
+| `Passivate` | `Terp.Akka.Entities` | entity-initiated passivation, compatible with Akka Cluster Sharding | [Entity region](/akka/entity-region) |
 
 ## A host with an actor system
 
@@ -36,7 +38,7 @@ You derive one class from `ActorSystemSetup`, then apply it like any other setup
 
 ```csharp
 using Akka.Hosting;
-using Terp.Akka;
+using Terp.Akka.Hosting;
 
 internal sealed class ExampleActorSystem : ActorSystemSetup
 {
@@ -60,7 +62,7 @@ using Terp.Hosting;
 
 var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddSingleton<IGreeter, Greeter>();   // injected into the actor
-builder.Services.AddActorRegistration<GreeterActorRegistration>();
+builder.Services.AddActorRegistration<GreeterActorRegistration>(); // Terp.Akka.Hosting
 builder.Setup<ExampleActorSystem>();
 await builder.Build().RunAsync();
 ```

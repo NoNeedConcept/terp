@@ -1,6 +1,6 @@
 using Terp.Akka.Entities;
 
-namespace Terp.Akka.Tests;
+namespace Terp.Akka.Tests.Entities;
 
 public sealed class EntityIdExtractorTests
 {

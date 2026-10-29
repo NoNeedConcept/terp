@@ -91,8 +91,8 @@ export default defineConfig({
         domain: origin || undefined,
         details:
           'Terp is a set of small foundation libraries for .NET applications, shipped as two NuGet packages. ' +
-          'The package Terp holds host setups (ISetup<T>), startup gates, diagnostics and metrics helpers, exponential backoff, a free-port finder and TimeProvider based date predicates, and depends on the Microsoft.Extensions abstractions only. ' +
-          'The package Terp.Akka builds on Terp and Akka.Hosting: one ActorSystemSetup per host, actor resolving with dependency injection, an actor registry and BackoffSupervisor helpers.',
+          'The package Terp holds host setups (ISetup<T> in Terp.Hosting), startup gates (Terp.Hosting.Gates), diagnostics and metrics helpers (Terp.Diagnostics), exponential backoff (Terp.Resilience), a free-port finder (Terp.Network), async locking (Terp.Threading) and TimeProvider based date predicates, and depends on the Microsoft.Extensions abstractions only. ' +
+          'The package Terp.Akka builds on Terp and Akka.Hosting: one ActorSystemSetup per host (Terp.Akka.Hosting), actor resolving and registry lookups with dependency injection (Terp.Akka), BackoffSupervisor helpers (Terp.Akka), and a local entity region with passivation and metrics (Terp.Akka.Entities).',
         ignoreFiles: ['index.md', 'brand/index.md']
       })
     ]

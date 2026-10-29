@@ -33,9 +33,9 @@ public sealed class AkkaOptionsExtensionsTests
     {
         var option = Option<string>.Create("test");
 
-        AssertParamName("some", () => option.Match((Func<string, int>)null!, () => 0));
+        AssertParamName("some", () => option.Match(null!, () => 0));
         AssertParamName("none", () => option.Match(_ => 0, null!));
-        AssertParamName("some", () => option.Match((Action<string>)null!, () => { }));
+        AssertParamName("some", () => option.Match(null!, () => { }));
         AssertParamName("none", () => option.Match(_ => { }, null!));
     }
 

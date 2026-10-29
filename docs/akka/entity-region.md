@@ -5,10 +5,10 @@ description: A parent actor that routes messages to per-entity children by ident
 
 # Entity region
 
-`EntityRegionActor` in `Terp.Akka` is a parent actor that routes messages to per-entity child actors by identity. Entities are spawned lazily on first message and passivated after being idle. It is a local alternative to Akka Cluster Sharding with the same passivation protocol, so you can migrate later without rewriting your message contracts.
+`EntityRegionActor` in `Terp.Akka.Entities` is a parent actor that routes messages to per-entity child actors by identity. Entities are spawned lazily on first message and passivated after being idle. It is a local alternative to Akka Cluster Sharding with the same passivation protocol, so you can migrate later without rewriting your message contracts.
 
 ```csharp
-using Terp.Akka;
+using Terp.Akka.Entities;
 ```
 
 ## Register a region

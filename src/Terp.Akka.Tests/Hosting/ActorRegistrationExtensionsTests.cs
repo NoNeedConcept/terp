@@ -5,7 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Terp.Akka.Hosting;
 using Terp.Hosting;
 
-namespace Terp.Akka.Tests;
+namespace Terp.Akka.Tests.Hosting;
 
 public sealed class ActorRegistrationExtensionsTests
 {

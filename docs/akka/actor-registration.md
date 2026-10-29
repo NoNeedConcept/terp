@@ -9,7 +9,7 @@ description: IActorRegistration lets libraries declare their actor topology with
 
 ```csharp
 using Akka.Hosting;
-using Terp.Akka;
+using Terp.Akka.Hosting;
 ```
 
 ## Write a registration

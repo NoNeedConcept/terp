@@ -5,11 +5,11 @@ description: ActorSystemSetup registers the one actor system of a host and valid
 
 # Actor system
 
-`ActorSystemSetup` is an abstract class in `Terp.Akka` that implements `ISetup<IServiceCollection>`. It registers the actor system with Akka.Hosting (`services.AddAkka(name, BuildSystem)`) under the name you give it.
+`ActorSystemSetup` is an abstract class in `Terp.Akka.Hosting` that implements `ISetup<IServiceCollection>`. It registers the actor system with Akka.Hosting (`services.AddAkka(name, BuildSystem)`) under the name you give it.
 
 ```csharp
 using Akka.Hosting;
-using Terp.Akka;
+using Terp.Akka.Hosting;
 using Terp.Hosting;
 ```
 

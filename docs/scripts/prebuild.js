@@ -11,6 +11,7 @@ const XML_PATHS = [
 ]
 const OUTPUT_DIR = 'api'
 const EXCLUDED_NAMESPACES = ['System', 'Microsoft', 'Internal']
+const EXCLUDED_TYPES = ['Terp.Akka.Entities.EntityRegionMetrics']
 
 const DOCS_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const OUT = join(DOCS_ROOT, OUTPUT_DIR)
@@ -216,7 +217,7 @@ function buildModel(members) {
   }
   for (const [fullName, t] of types) t.namespace = namespaceOf(fullName)
   for (const [fullName, t] of types) {
-    if (isExcluded(t.namespace) || !t.namespace) types.delete(fullName)
+    if (isExcluded(t.namespace) || !t.namespace || EXCLUDED_TYPES.includes(fullName)) types.delete(fullName)
   }
 
   const targets = { F: 'fields', P: 'properties', E: 'events', M: 'methods' }
