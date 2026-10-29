@@ -66,4 +66,4 @@ Terp stands next to the NNC mark, never inside it.
 
 ## Full brand kit
 
-The complete CI design including all assets is in [`docs/brand/`](https://github.com/st0o0/terp/tree/main/docs/brand) and documented in [`BRAND.md`](https://github.com/st0o0/terp/blob/main/docs/brand/BRAND.md).
+The complete CI design including all assets is in [`docs/brand/`](https://github.com/NoNeedConcept/terp/tree/main/docs/brand) and documented in [`BRAND.md`](https://github.com/NoNeedConcept/terp/blob/main/docs/brand/BRAND.md).

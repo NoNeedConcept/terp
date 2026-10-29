@@ -13,8 +13,8 @@
         <Authors>st0o0</Authors>
         <Copyright>Copyright (c) 2026 st0o0</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageProjectUrl>https://github.com/st0o0/terp</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/st0o0/terp</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/NoNeedConcept/terp</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/NoNeedConcept/terp</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -30,8 +30,6 @@
 
     <PropertyGroup Condition="'$(ContinuousIntegrationBuild)' == 'true'">
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <!-- Akka.Remote CVE (GHSA-jhpv-4q4f-43g5): remote-deserialization only, unpatched in 1.5.x -->
-        <NoWarn>$(NoWarn);NU1903;NU1904</NoWarn>
     </PropertyGroup>
 
     <PropertyGroup Condition="$(MSBuildProjectName.EndsWith('Tests'))">

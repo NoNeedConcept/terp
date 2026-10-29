@@ -126,16 +126,18 @@ public sealed class EntityRegionActor : ReceiveActor, IWithTimers
             return;
         }
 
+        var entityMessage = _extractor.EntityMessage(message) ?? message;
+
         if (_permanentlyStopped.Contains(entityId))
         {
             _log.Warning("Entity '{0}' in region '{1}' is permanently stopped. Message sent to DeadLetters.", entityId, _regionTag);
-            Context.System.DeadLetters.Tell(_extractor.EntityMessage(message));
+            Context.System.DeadLetters.Tell(entityMessage);
             return;
         }
 
         if (_passivating.Contains(entityId))
         {
-            BufferMessage(entityId, _extractor.EntityMessage(message), Sender);
+            BufferMessage(entityId, entityMessage, Sender);
             return;
         }
 
@@ -145,7 +147,7 @@ public sealed class EntityRegionActor : ReceiveActor, IWithTimers
             return;
         }
 
-        entity.Tell(_extractor.EntityMessage(message), Sender);
+        entity.Tell(entityMessage, Sender);
         _entities[entityId] = _entities[entityId] with { LastActivity = _timeProvider.GetUtcNow() };
     }
 
