@@ -5,7 +5,7 @@ description: Setups for each target, one class for several targets, the generic 
 
 # Writing setups
 
-A setup (package `Terp`, namespace `Terp.Hosting`) is a small class named `XxxSetup` that implements `ISetup<TTarget>` for the parts of the host it changes. This page shows one for each target. For the model and the ordering rules see [Hosting](/hosting/).
+A setup (package `Terp`, namespace `Terp.Hosting`) is a small class named `XxxSetup` that implements `ISetup<TTarget>` for the parts of the host it changes. This page shows one for each target. For the model and the ordering rules see [Terp](/terp/).
 
 ```csharp
 using Terp.Hosting;

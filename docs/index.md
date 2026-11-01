@@ -15,8 +15,8 @@ hero:
       text: Getting started
       link: /getting-started
     - theme: alt
-      text: Hosting
-      link: /hosting/
+      text: Terp
+      link: /terp/
 ---
 
 ## Packages
@@ -31,5 +31,5 @@ Both packages share one version and are always released together.
 ## Where to start
 
 - [Getting started](/getting-started) shows a host with one setup and one startup gate.
-- [Hosting](/hosting/) explains setups, their order and gates.
+- [Terp](/terp/) explains setups, their order and gates.
 - [Terp.Akka](/akka/) covers the actor system setup and its helpers.

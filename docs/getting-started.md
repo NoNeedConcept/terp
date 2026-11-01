@@ -65,7 +65,7 @@ internal sealed class GreetingSetup : ISetup<IServiceCollection>
 Every `Setup` call runs when you make it. The order of your calls is the order of the setups.
 :::
 
-The gate runs while the host starts, before the host reports started. This one is always clear, so startup continues. A gate that returns `false` is checked again with exponential backoff. See [startup gates](/hosting/gates).
+The gate runs while the host starts, before the host reports started. This one is always clear, so startup continues. A gate that returns `false` is checked again with exponential backoff. See [startup gates](/terp/gates).
 
 `StartTimer()` returns a `TimerScope`. When the `using` block ends it records the elapsed seconds on the histogram and tags the measurement with `outcome`. See [diagnostics](/diagnostics/).
 
@@ -87,9 +87,9 @@ Terp ships the interface only. It contains no repository, generator or lookup th
 
 ## Where to go next
 
-- [Hosting](/hosting/) explains the model, the targets and the order setups run in.
-- [Setups](/hosting/setups) shows a setup for each target and how to test one.
-- [Startup gates](/hosting/gates) covers readiness checks before the host starts.
+- [Terp](/terp/) explains the model, the targets and the order setups run in.
+- [Setups](/terp/setups) shows a setup for each target and how to test one.
+- [Startup gates](/terp/gates) covers readiness checks before the host starts.
 - [Diagnostics](/diagnostics/) has timers, job metrics and the HTTP client metrics handler.
 - [Akka](/akka/) describes `Terp.Akka`.
 

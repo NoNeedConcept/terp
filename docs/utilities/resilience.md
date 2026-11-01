@@ -76,7 +76,7 @@ var first = policy.DelayWithJitter(3);
 A policy holds no state besides its settings, so one instance can serve many callers.
 
 ::: info Where Terp uses it
-The [startup gates](/hosting/gates) wait with `Delay` (no jitter): 1 second initial delay, doubling, capped at 30 seconds.
+The [startup gates](/terp/gates) wait with `Delay` (no jitter): 1 second initial delay, doubling, capped at 30 seconds.
 :::
 
 For restarting Akka actors with backoff see [Backoff helpers](/akka/backoff).

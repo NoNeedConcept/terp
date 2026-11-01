@@ -104,7 +104,7 @@ export default defineConfig({
     logo: '/logo.svg',
     nav: [
       { text: 'Getting started', link: '/getting-started' },
-      { text: 'Hosting', link: '/hosting/', activeMatch: '^/hosting/' },
+      { text: 'Terp', link: '/terp/', activeMatch: '^/terp/' },
       { text: 'Terp.Akka', link: '/akka/', activeMatch: '^/akka/' },
       { text: 'API', link: '/api/', activeMatch: '^/api/' }
     ],
@@ -114,11 +114,11 @@ export default defineConfig({
         items: [{ text: 'Getting started', link: '/getting-started' }]
       },
       {
-        text: 'Hosting',
+        text: 'Terp',
         items: [
-          { text: 'Overview', link: '/hosting/' },
-          { text: 'Setups', link: '/hosting/setups' },
-          { text: 'Startup gates', link: '/hosting/gates' }
+          { text: 'Overview', link: '/terp/' },
+          { text: 'Setups', link: '/terp/setups' },
+          { text: 'Startup gates', link: '/terp/gates' }
         ]
       },
       {

@@ -45,7 +45,7 @@ app.Setup(new MapEndpoints());           // MapEndpoints : ISetup<WebApplication
 await app.RunAsync();
 ```
 
-[Setups](/hosting/setups) shows an example for each target.
+[Setups](/terp/setups) shows an example for each target.
 
 ## Order
 
@@ -94,5 +94,5 @@ dotnet publish src/Terp.Hosting.Example -c Release -r win-x64
 
 ## Related pages
 
-- [Setups](/hosting/setups) covers writing and testing setups.
-- [Startup gates](/hosting/gates) covers readiness checks that run before the host reports started.
+- [Setups](/terp/setups) covers writing and testing setups.
+- [Startup gates](/terp/gates) covers readiness checks that run before the host reports started.
