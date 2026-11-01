@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.1](https://github.com/NoNeedConcept/terp/compare/v0.1.0...v0.1.1) (2026-11-01)
+
+
+### Features
+
+* **akka:** add stream supervision resume extensions ([1774518](https://github.com/NoNeedConcept/terp/commit/17745185cefd6308ef5983804b8b1aecd105ef8a))
+
+
+### Documentation
+
+* rename Hosting section to Terp in navigation and move to /terp/ path ([9042b8f](https://github.com/NoNeedConcept/terp/commit/9042b8f1acf877fbf8ef7415737832b81851bc9a))
+
 ## 0.1.0 (2026-10-29)
 
 
