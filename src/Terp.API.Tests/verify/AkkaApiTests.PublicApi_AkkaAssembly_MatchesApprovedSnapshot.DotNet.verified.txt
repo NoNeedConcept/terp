@@ -57,6 +57,13 @@ namespace Terp.Akka
         public static Akka.Actor.IActorRef ResolveChildActor<TActor>(this Akka.Actor.IActorContext context, string? name, System.Func<Akka.Actor.Props, Akka.Actor.Props> configure, params object[] args)
             where TActor : Akka.Actor.ActorBase { }
     }
+    public static class StreamSupervisionExtensions
+    {
+        public static Akka.Streams.Dsl.Source<TOut, TMat> ResumeOnError<TOut, TMat>(this Akka.Streams.Dsl.Source<TOut, TMat> source) { }
+        public static Akka.Streams.Dsl.Source<TOut, TMat> ResumeOnError<TOut, TMat>(this Akka.Streams.Dsl.Source<TOut, TMat> source, Akka.Event.ILoggingAdapter log) { }
+        public static Akka.Streams.Dsl.Flow<TIn, TOut, TMat> ResumeOnError<TIn, TOut, TMat>(this Akka.Streams.Dsl.Flow<TIn, TOut, TMat> flow) { }
+        public static Akka.Streams.Dsl.Flow<TIn, TOut, TMat> ResumeOnError<TIn, TOut, TMat>(this Akka.Streams.Dsl.Flow<TIn, TOut, TMat> flow, Akka.Event.ILoggingAdapter log) { }
+    }
 }
 namespace Terp.Akka.Entities
 {
