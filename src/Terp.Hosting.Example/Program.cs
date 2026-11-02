@@ -4,8 +4,9 @@ using Terp.Hosting.Example;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-builder.Setup<DemoSetup>();
-builder.Setup<WorkerSetup>();
+builder.Setups()
+    .Add<DemoSetup>()
+    .Add<WorkerSetup>();
 
 using var host = builder.Build();
 await host.RunAsync();

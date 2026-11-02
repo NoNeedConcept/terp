@@ -70,36 +70,32 @@ namespace Terp.Diagnostics
 }
 namespace Terp.Hosting
 {
-    public static class ApplicationSetupExtensions
+    public static class ApplicationSetupChainExtensions
     {
-        public static Microsoft.Extensions.Hosting.IHost Setup<TSetup>(this Microsoft.Extensions.Hosting.IHost app)
-            where TSetup : Terp.Hosting.ISetup, new () { }
-        public static TApplication Setup<TApplication>(this TApplication app, Terp.Hosting.ISetup setup)
+        public static Terp.Hosting.SetupChain<TApplication> Setups<TApplication>(this TApplication app)
             where TApplication : Microsoft.Extensions.Hosting.IHost { }
-        public static TApplication Setup<TApplication, TSetup>(this TApplication app)
-            where TApplication : Microsoft.Extensions.Hosting.IHost
-            where TSetup : Terp.Hosting.ISetup, new () { }
+    }
+    public static class BuilderSetupChainExtensions
+    {
+        public static Terp.Hosting.SetupChain<TBuilder> Setups<TBuilder>(this TBuilder builder)
+            where TBuilder : Microsoft.Extensions.Hosting.IHostApplicationBuilder { }
     }
     public interface ISetup { }
     public interface ISetup<in TTarget> : Terp.Hosting.ISetup
     {
         void Setup(TTarget target, Terp.Hosting.SetupContext context);
     }
+    public readonly struct SetupChain<TTarget>
+    {
+        public Terp.Hosting.SetupChain<TTarget> Add(Terp.Hosting.ISetup setup) { }
+        public Terp.Hosting.SetupChain<TTarget> Add<TSetup>()
+            where TSetup : Terp.Hosting.ISetup, new () { }
+    }
     public sealed class SetupContext
     {
         public SetupContext(Microsoft.Extensions.Configuration.IConfiguration configuration, Microsoft.Extensions.Hosting.IHostEnvironment environment) { }
         public Microsoft.Extensions.Configuration.IConfiguration Configuration { get; }
         public Microsoft.Extensions.Hosting.IHostEnvironment Environment { get; }
-    }
-    public static class SetupExtensions
-    {
-        public static Microsoft.Extensions.Hosting.IHostApplicationBuilder Setup<TSetup>(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder)
-            where TSetup : Terp.Hosting.ISetup, new () { }
-        public static TBuilder Setup<TBuilder>(this TBuilder builder, Terp.Hosting.ISetup setup)
-            where TBuilder : Microsoft.Extensions.Hosting.IHostApplicationBuilder { }
-        public static TBuilder Setup<TBuilder, TSetup>(this TBuilder builder)
-            where TBuilder : Microsoft.Extensions.Hosting.IHostApplicationBuilder
-            where TSetup : Terp.Hosting.ISetup, new () { }
     }
 }
 namespace Terp.Hosting.Gates

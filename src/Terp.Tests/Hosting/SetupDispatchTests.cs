@@ -91,49 +91,48 @@ public sealed class SetupDispatchTests
     }
 
     [Fact]
-    public void Setup_SetupWithAllTargets_RunsTargetsByPhase()
+    public void Add_SetupWithAllTargets_RunsTargetsByPhase()
     {
         List<string> log = [];
         var builder = Host.CreateApplicationBuilder();
 
-        builder.Setup(new AllTargetsSetup("c", log));
+        builder.Setups().Add(new AllTargetsSetup("c", log));
 
         Assert.Equal(["c.configuration", "c.logging", "c.services", "c.metrics", "c.builder"], log);
     }
 
     [Fact]
-    public void Setup_DirectCalls_RunImmediatelyInCallOrderInsteadOfPhaseMajor()
+    public void Add_DirectCalls_RunImmediatelyInCallOrderInsteadOfPhaseMajor()
     {
         List<string> log = [];
         var builder = Host.CreateApplicationBuilder();
 
-        builder
-            .Setup(new ConfigurationAndServicesSetup("a", log))
-            .Setup(new ConfigurationAndServicesSetup("b", log));
+        builder.Setups()
+            .Add(new ConfigurationAndServicesSetup("a", log))
+            .Add(new ConfigurationAndServicesSetup("b", log));
 
         Assert.Equal(["a.configuration", "a.services", "b.configuration", "b.services"], log);
     }
 
     [Fact]
-    public void Setup_SetupWithoutAnyTarget_ThrowsInvalidOperationExceptionNamingTypes()
+    public void Add_SetupWithoutAnyTarget_ThrowsInvalidOperationExceptionNamingTypes()
     {
         var builder = Host.CreateApplicationBuilder();
 
-        var ex = Assert.Throws<InvalidOperationException>(() => builder.Setup(new MarkerOnlySetup()));
+        var ex = Assert.Throws<InvalidOperationException>(() => builder.Setups().Add(new MarkerOnlySetup()));
 
         Assert.Multiple(
             () => Assert.Contains(typeof(MarkerOnlySetup).FullName!, ex.Message, StringComparison.Ordinal),
-            () => Assert.Contains(typeof(HostApplicationBuilder).FullName!, ex.Message, StringComparison.Ordinal),
-            () => Assert.Contains("ISetup<WebApplication>", ex.Message, StringComparison.Ordinal));
+            () => Assert.Contains(typeof(HostApplicationBuilder).FullName!, ex.Message, StringComparison.Ordinal));
     }
 
     [Fact]
-    public void Setup_ServicesOnlySetup_ReceivesOnlyServicesAndAReadOnlyContext()
+    public void Add_ServicesOnlySetup_ReceivesOnlyServicesAndAReadOnlyContext()
     {
         var builder = Host.CreateApplicationBuilder();
         var setup = new ServicesOnlySetup();
 
-        builder.Setup(setup);
+        builder.Setups().Add(setup);
 
         Assert.Multiple(
             () => Assert.Same(builder.Services, setup.Services),
@@ -142,12 +141,12 @@ public sealed class SetupDispatchTests
     }
 
     [Fact]
-    public void Setup_NarrowTargets_ReceiveTheMatchingPartOfTheBuilder()
+    public void Add_NarrowTargets_ReceiveTheMatchingPartOfTheBuilder()
     {
         var builder = Host.CreateApplicationBuilder();
         var spy = new SpySetup();
 
-        builder.Setup(spy);
+        builder.Setups().Add(spy);
 
         Assert.Multiple(
             () => Assert.Same(builder.Configuration, spy.Configuration),

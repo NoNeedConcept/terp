@@ -95,7 +95,7 @@ public sealed class ActorRegistrationExtensionsTests
     {
         var builder = Host.CreateApplicationBuilder();
         builder.Services.AddActorRegistration<RegistrationA>();
-        builder.Setup(new TestActorSystemSetup((b, p) => b.ApplyRegistrations(p)));
+        builder.Setups().Add(new TestActorSystemSetup((b, p) => b.ApplyRegistrations(p)));
         using var host = builder.Build();
 
         await host.StartAsync(TestContext.Current.CancellationToken);
@@ -110,7 +110,7 @@ public sealed class ActorRegistrationExtensionsTests
         var builder = Host.CreateApplicationBuilder();
         builder.Services.AddActorRegistration<RegistrationA>();
         builder.Services.AddActorRegistration<RegistrationB>();
-        builder.Setup(new TestActorSystemSetup((b, p) => b.ApplyRegistrations(p)));
+        builder.Setups().Add(new TestActorSystemSetup((b, p) => b.ApplyRegistrations(p)));
         using var host = builder.Build();
 
         await host.StartAsync(TestContext.Current.CancellationToken);

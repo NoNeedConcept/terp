@@ -1,8 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Terp.Akka.Hosting;
 using Terp.Akka.Example;
+using Terp.Akka.Hosting;
 using Terp.Hosting;
 
 var builder = Host.CreateApplicationBuilder(args);
@@ -12,7 +12,7 @@ builder.Services.AddSingleton<IGreeter, Greeter>();     // dependency injected i
 builder.Services.AddActorRegistration<GreeterActorRegistration>();
 builder.Services.AddHostedService<DemoWorker>();
 
-builder.Setup<ExampleActorSystem>();
+builder.Setups().Add<ExampleActorSystem>();
 
 using var host = builder.Build();
 

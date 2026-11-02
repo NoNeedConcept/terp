@@ -43,69 +43,85 @@ public sealed class SetupExtensionsTests
     }
 
     [Fact]
-    public void Setup_ChainedBuilderSetups_RunInCallOrderAndReturnSameBuilder()
+    public void Add_ChainedBuilderSetups_RunInCallOrder()
     {
         List<string> log = [];
-        HostApplicationBuilder builder = Host.CreateApplicationBuilder();
+        var builder = Host.CreateApplicationBuilder();
 
-        HostApplicationBuilder returned = builder
-            .Setup(new RecordingSetup("a", log))
-            .Setup(new RecordingSetup("b", log))
-            .Setup(new RecordingSetup("c", log));
+        builder.Setups()
+            .Add(new RecordingSetup("a", log))
+            .Add(new RecordingSetup("b", log))
+            .Add(new RecordingSetup("c", log));
 
-        Assert.Same(builder, returned);
         Assert.Equal(["a", "b", "c"], log);
     }
 
     [Fact]
-    public void SetupGeneric_BuilderSetupType_CreatesAndAppliesIt()
+    public void AddGeneric_BuilderSetupType_CreatesAndAppliesIt()
     {
         var builder = Host.CreateApplicationBuilder();
 
-        var returned = builder.Setup<ServiceSetup>();
+        builder.Setups().Add<ServiceSetup>();
 
-        Assert.Same(builder, returned);
         using var host = builder.Build();
         Assert.NotNull(host.Services.GetService<Marker>());
     }
 
     [Fact]
-    public void Setup_ChainedHostSetups_RunInCallOrderAndReturnSameHost()
+    public void Add_ChainedHostSetups_RunInCallOrder()
     {
         List<string> log = [];
         using var host = Host.CreateApplicationBuilder().Build();
 
-        var returned = host
-            .Setup(new HostSetup("first", log))
-            .Setup(new HostSetup("second", log));
+        host.Setups()
+            .Add(new HostSetup("first", log))
+            .Add(new HostSetup("second", log));
 
-        Assert.Same(host, returned);
         Assert.Equal(["first", "second"], log);
     }
 
     [Fact]
-    public void SetupGeneric_HostSetupType_CreatesAndAppliesIt()
+    public void AddGeneric_HostSetupType_CreatesAndAppliesIt()
     {
         var before = DefaultHostSetup.Calls;
         using var host = Host.CreateApplicationBuilder().Build();
 
-        var returned = host.Setup<DefaultHostSetup>();
+        host.Setups().Add<DefaultHostSetup>();
 
-        Assert.Same(host, returned);
         Assert.Equal(before + 1, DefaultHostSetup.Calls);
     }
 
     [Fact]
-    public void Setup_NullSetup_ThrowsArgumentNullException()
+    public void Add_NullSetup_ThrowsArgumentNullException()
     {
         var builder = Host.CreateApplicationBuilder();
         using var host = builder.Build();
 
-        var builderEx = Assert.Throws<ArgumentNullException>(() => builder.Setup((ISetup)null!));
-        var hostEx = Assert.Throws<ArgumentNullException>(() => host.Setup((ISetup)null!));
+        var builderEx = Assert.Throws<ArgumentNullException>(() => builder.Setups().Add(null!));
+        var hostEx = Assert.Throws<ArgumentNullException>(() => host.Setups().Add(null!));
 
         Assert.Multiple(
             () => Assert.Equal("setup", builderEx.ParamName),
             () => Assert.Equal("setup", hostEx.ParamName));
+    }
+
+    [Fact]
+    public void Setups_NullBuilder_ThrowsArgumentNullException()
+    {
+        IHostApplicationBuilder builder = null!;
+
+        var ex = Assert.Throws<ArgumentNullException>(() => builder.Setups());
+
+        Assert.Equal("builder", ex.ParamName);
+    }
+
+    [Fact]
+    public void Setups_NullApplication_ThrowsArgumentNullException()
+    {
+        IHost app = null!;
+
+        var ex = Assert.Throws<ArgumentNullException>(() => app.Setups());
+
+        Assert.Equal("app", ex.ParamName);
     }
 }

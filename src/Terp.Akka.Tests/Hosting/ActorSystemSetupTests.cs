@@ -23,7 +23,7 @@ public sealed class ActorSystemSetupTests
     public async Task Setup_ValidSetup_RegistersActorSystemAvailableOnStart()
     {
         var builder = Host.CreateApplicationBuilder();
-        builder.Setup(new TestActorSystemSetup());
+        builder.Setups().Add(new TestActorSystemSetup());
         using var host = builder.Build();
 
         await host.StartAsync(TestContext.Current.CancellationToken);
@@ -36,10 +36,10 @@ public sealed class ActorSystemSetupTests
     public void Setup_SecondActorSystemSetup_ThrowsInvalidOperationException()
     {
         var builder = Host.CreateApplicationBuilder();
-        builder.Setup(new TestActorSystemSetup("first"));
+        builder.Setups().Add(new TestActorSystemSetup("first"));
 
         var ex = Assert.Throws<InvalidOperationException>(
-            () => builder.Setup(new TestActorSystemSetup("second")));
+            () => builder.Setups().Add(new TestActorSystemSetup("second")));
 
         Assert.Contains("second", ex.Message, StringComparison.Ordinal);
     }
@@ -49,9 +49,9 @@ public sealed class ActorSystemSetupTests
     {
         var builder = Host.CreateApplicationBuilder();
         var container = new TestActorSystemSetup();
-        builder.Setup(container);
+        builder.Setups().Add(container);
 
-        var ex = Assert.Throws<InvalidOperationException>(() => builder.Setup(container));
+        var ex = Assert.Throws<InvalidOperationException>(() => builder.Setups().Add(container));
 
         Assert.NotEmpty(ex.Message);
     }
@@ -70,7 +70,7 @@ public sealed class ActorSystemSetupTests
     {
         var builder = Host.CreateApplicationBuilder();
 
-        var ex = Assert.ThrowsAny<ArgumentException>(() => builder.Setup(new TestActorSystemSetup(name!)));
+        var ex = Assert.ThrowsAny<ArgumentException>(() => builder.Setups().Add(new TestActorSystemSetup(name!)));
 
         Assert.Equal("name", ex.ParamName);
     }
@@ -83,7 +83,7 @@ public sealed class ActorSystemSetupTests
     {
         var builder = Host.CreateApplicationBuilder();
 
-        builder.Setup(new TestActorSystemSetup(name));
+        builder.Setups().Add(new TestActorSystemSetup(name));
     }
 
     [Fact]
@@ -125,7 +125,7 @@ public sealed class ActorSystemSetupTests
     {
         var setup = new ActorRegisteringSetup();
         var builder = Host.CreateApplicationBuilder();
-        builder.Setup(setup);
+        builder.Setups().Add(setup);
         using var host = builder.Build();
 
         await host.StartAsync(TestContext.Current.CancellationToken);

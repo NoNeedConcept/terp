@@ -69,33 +69,33 @@ public sealed class BuilderAndApplicationSetupTests
     }
 
     [Fact]
-    public void Setup_SetupForAnyBuilder_RunsWithAnotherBuilderTypeAndReceivesIt()
+    public void Add_SetupForAnyBuilder_RunsWithAnotherBuilderTypeAndReceivesIt()
     {
         var builder = new FakeBuilder(Host.CreateApplicationBuilder());
         var setup = new AnyBuilderSetup();
 
-        builder.Setup(setup);
+        builder.Setups().Add(setup);
 
         Assert.Same(builder, setup.Received);
     }
 
     [Fact]
-    public void Setup_SetupForConcreteBuilder_ReceivesTheConcreteBuilder()
+    public void Add_SetupForConcreteBuilder_ReceivesTheConcreteBuilder()
     {
         var builder = new FakeBuilder(Host.CreateApplicationBuilder());
         var setup = new FakeBuilderSetup();
 
-        builder.Setup(setup);
+        builder.Setups().Add(setup);
 
         Assert.Same(builder, setup.Received);
     }
 
     [Fact]
-    public void Setup_SetupForOtherBuilderType_ThrowsInvalidOperationExceptionNamingBothTypes()
+    public void Add_SetupForOtherBuilderType_ThrowsInvalidOperationExceptionNamingBothTypes()
     {
         var builder = Host.CreateApplicationBuilder();
 
-        var ex = Assert.Throws<InvalidOperationException>(() => builder.Setup(new FakeBuilderSetup()));
+        var ex = Assert.Throws<InvalidOperationException>(() => builder.Setups().Add(new FakeBuilderSetup()));
 
         Assert.Multiple(
             () => Assert.Contains(typeof(FakeBuilderSetup).FullName!, ex.Message, StringComparison.Ordinal),
@@ -103,59 +103,57 @@ public sealed class BuilderAndApplicationSetupTests
     }
 
     [Fact]
-    public void Setup_OtherBuilderTypeAlongsideBuiltInTarget_IgnoresTheMismatchingBuilderTarget()
+    public void Add_OtherBuilderTypeAlongsideBuiltInTarget_IgnoresTheMismatchingBuilderTarget()
     {
         List<string> log = [];
         var builder = Host.CreateApplicationBuilder();
 
-        builder.Setup(new ServicesAndFakeBuilderSetup(log));
+        builder.Setups().Add(new ServicesAndFakeBuilderSetup(log));
 
         Assert.Equal(["services"], log);
     }
 
     [Fact]
-    public void Setup_ApplicationSetupForConcreteApplication_ReturnsTheApplicationWithConfigurationInContext()
+    public void Add_ApplicationSetupForConcreteApplication_ReturnsChainWithConfigurationInContext()
     {
         var before = FakeAppSetup.Calls;
         using var app = BuildFakeApp();
 
-        var returned = app.Setup(new FakeAppSetup());
+        app.Setups().Add(new FakeAppSetup());
 
         Assert.Multiple(
-            () => Assert.Same(app, returned),
             () => Assert.Equal(before + 1, FakeAppSetup.Calls),
             () => Assert.Same(app.Services.GetRequiredService<IConfiguration>(), FakeAppSetup.LastContext?.Configuration));
     }
 
     [Fact]
-    public void Setup_ApplicationSetupByTypeArguments_CreatesAndAppliesIt()
+    public void AddGeneric_ApplicationSetupByTypeArgument_CreatesAndAppliesIt()
     {
         var before = FakeAppSetup.Calls;
         using var app = BuildFakeApp();
 
-        var returned = app.Setup<FakeApp, FakeAppSetup>();
+        app.Setups().Add<FakeAppSetup>();
 
-        Assert.Same(app, returned);
         Assert.Equal(before + 1, FakeAppSetup.Calls);
     }
 
     [Fact]
-    public void Setup_SetupForAnyHost_RunsOnAConcreteApplication()
+    public void Add_SetupForAnyHost_RunsOnAConcreteApplication()
     {
         using var app = BuildFakeApp();
         var setup = new AnyHostSetup();
 
-        app.Setup(setup);
+        app.Setups().Add(setup);
 
         Assert.NotNull(setup.Context?.Configuration);
     }
 
     [Fact]
-    public void Setup_ApplicationSetupForOtherApplicationType_ThrowsInvalidOperationExceptionNamingBothTypes()
+    public void Add_ApplicationSetupForOtherApplicationType_ThrowsInvalidOperationExceptionNamingBothTypes()
     {
         using var host = Host.CreateApplicationBuilder().Build();
 
-        var ex = Assert.Throws<InvalidOperationException>(() => host.Setup(new FakeAppSetup()));
+        var ex = Assert.Throws<InvalidOperationException>(() => host.Setups().Add(new FakeAppSetup()));
 
         Assert.Multiple(
             () => Assert.Contains(typeof(FakeAppSetup).FullName!, ex.Message, StringComparison.Ordinal),
