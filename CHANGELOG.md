@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.2.0](https://github.com/NoNeedConcept/terp/compare/v0.1.1...v0.2.0) (2026-11-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* replace Setup extensions with SetupChain<T> fluent API
+
+### Features
+
+* replace Setup extensions with SetupChain&lt;T&gt; fluent API ([30aa625](https://github.com/NoNeedConcept/terp/commit/30aa625a138536ce5251cd64b8fa22422e022a47))
+
+
+### Documentation
+
+* update VitePress docs for SetupChain API ([6e2ea65](https://github.com/NoNeedConcept/terp/commit/6e2ea655b21022676a26cbf36419cc68ce282ebe))
+
 ## [0.1.1](https://github.com/NoNeedConcept/terp/compare/v0.1.0...v0.1.1) (2026-11-01)
 
 
