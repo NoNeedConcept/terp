@@ -52,7 +52,8 @@ using Terp.Hosting;
 using Terp.Hosting.Gates;
 
 var builder = Host.CreateApplicationBuilder(args);
-builder.Setup(new WarmupSetup());
+
+builder.Setups().Add<WarmupSetup>();
 
 using var host = builder.Build();
 await host.RunAsync();
@@ -78,18 +79,17 @@ internal sealed class MyActorSystem : ActorSystemSetup
     protected override string ActorSystemName => "my-system";
 
     protected override void BuildSystem(AkkaConfigurationBuilder builder, IServiceProvider serviceProvider) =>
-        builder.WithActors((system, registry, resolver) =>
-            registry.Register<GreeterActor>(system.ActorOf(resolver.Props<GreeterActor>(), "greeter")));
+        builder.ApplyRegistrations(serviceProvider);
 }
 
-builder.Setup(new MyActorSystem());
+builder.Setups().Add<MyActorSystem>();
 ```
 
 ## How setups run
 
 - A setup implements `ISetup<TTarget>` for each target it configures: `IConfigurationManager`, `ILoggingBuilder`, `IServiceCollection`, `IMetricsBuilder`, `IHostApplicationBuilder`, or `IHost`.
 - Inside one setup, targets run in a fixed order: configuration, logging, services, metrics, builder.
-- Across setups, `builder.Setup(...)` runs immediately. Call order is run order.
+- Setups are registered via `builder.Setups().Add<T>()` and run in registration order.
 - Dispatch uses pattern matching with no reflection. Trimming and Native AOT work out of the box.
 
 ## Samples
