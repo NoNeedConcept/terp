@@ -35,7 +35,7 @@ using Terp.Hosting.Gates;
 
 var builder = Host.CreateApplicationBuilder(args);
 
-builder.Setup<GreetingSetup>();                                      // runs immediately
+builder.Setups().Add<GreetingSetup>();                                 // runs immediately
 builder.Services.AddStartupGate("greeting", ct => Task.FromResult(true));
 
 using var meter = new Meter("MyApp");
@@ -59,10 +59,10 @@ internal sealed class GreetingSetup : ISetup<IServiceCollection>
 }
 ```
 
-`builder.Setup(...)` applies the setup at once and returns the builder, so calls chain. A setup that implements no supported target throws an `InvalidOperationException` that names the type.
+`builder.Setups()` starts a chain. Each `Add<T>()` applies the setup at once and returns the chain, preserving the concrete builder type. A setup that implements no supported target throws an `InvalidOperationException` that names the type.
 
 ::: info Order
-Every `Setup` call runs when you make it. The order of your calls is the order of the setups.
+Every `Add` call runs when you make it. The order of your calls is the order of the setups.
 :::
 
 The gate runs while the host starts, before the host reports started. This one is always clear, so startup continues. A gate that returns `false` is checked again with exponential backoff. See [startup gates](/terp/gates).

@@ -63,7 +63,7 @@ using Terp.Hosting;
 var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddSingleton<IGreeter, Greeter>();   // injected into the actor
 builder.Services.AddActorRegistration<GreeterActorRegistration>(); // Terp.Akka.Hosting
-builder.Setup<ExampleActorSystem>();
+builder.Setups().Add<ExampleActorSystem>();
 await builder.Build().RunAsync();
 ```
 

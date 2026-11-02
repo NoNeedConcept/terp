@@ -31,17 +31,17 @@ The target is the part of the host the setup may change. `SetupContext` is read-
 | `ISetup<WebApplicationBuilder>` | the concrete builder | for example `builder.WebHost.ConfigureKestrel` |
 | `ISetup<WebApplication>` | the built app | after `Build()`, for example map endpoints |
 
-The last row, and any other `IHost`, is applied with `app.Setup(...)` after `Build()`. All others are applied with `builder.Setup(...)` before it.
+The last row, and any other `IHost`, is applied with `app.Setups().Add<T>()` after `Build()`. All others are applied with `builder.Setups().Add<T>()` before it.
 
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
 
-builder
-    .Setup<LoggingSetup>()
-    .Setup<ServicesSetup>();
+builder.Setups()
+    .Add<LoggingSetup>()
+    .Add<ServicesSetup>();
 
 var app = builder.Build();
-app.Setup(new MapEndpoints());           // MapEndpoints : ISetup<WebApplication>
+app.Setups().Add<MapEndpoints>();        // MapEndpoints : ISetup<WebApplication>
 await app.RunAsync();
 ```
 
@@ -49,7 +49,7 @@ await app.RunAsync();
 
 ## Order
 
-`builder.Setup(x)` runs the setup immediately, so setups run in the order of your calls. There is no discovery, no ordering attribute and no phase numbers. You write the order down.
+`builder.Setups().Add<T>()` runs the setup immediately, so setups run in the order of your calls. There is no discovery, no ordering attribute and no phase numbers. You write the order down.
 
 ::: info Order across setups
 If setup B reads a service that setup A registers, call A first. Terp does not sort.
@@ -61,13 +61,13 @@ Inside one setup class that implements several targets, the targets run in a fix
 A setup can add a configuration source and then read `context.Configuration` in its services part. The configuration part has already run.
 :::
 
-`app.Setup(...)` also runs immediately and in call order. Order matters here for routing: a catch-all route registered early swallows endpoints mapped later.
+`app.Setups().Add<T>()` also runs immediately and in call order. Order matters here for routing: a catch-all route registered early swallows endpoints mapped later.
 
 ## Builder types
 
-`Setup` works on any `IHostApplicationBuilder`, including `WebApplication.CreateBuilder(args)` and `Host.CreateApplicationBuilder(args)`. The method returns the same builder type it was called on, so calls chain without losing the type.
+`Setups()` works on any `IHostApplicationBuilder`, including `WebApplication.CreateBuilder(args)` and `Host.CreateApplicationBuilder(args)`. The chain preserves the concrete builder type, so `builder.Build()` returns `WebApplication` (not `IHost`) after any number of `Add` calls.
 
-The builder target is matched against the static type of the receiver. To apply an `ISetup<WebApplicationBuilder>`, call `Setup` on an expression typed `WebApplicationBuilder`. Use `Setup<TBuilder, TSetup>()` when you create setups by type.
+The builder target is matched against the static type of the receiver. To apply an `ISetup<WebApplicationBuilder>`, call `Setups()` on an expression typed `WebApplicationBuilder`.
 
 ::: warning Mismatched builder target
 If a setup implements `ISetup<WebApplicationBuilder>` and you apply it to a `HostApplicationBuilder`, that part is silently skipped, provided another target of the same setup matches. Terp cannot detect this without reflection.
@@ -75,14 +75,14 @@ If a setup implements `ISetup<WebApplicationBuilder>` and you apply it to a `Hos
 
 ## A setup that matches nothing
 
-If a setup implements none of the supported targets for the builder you call it on, `builder.Setup` throws an `InvalidOperationException` that names the setup type and the builder type. The same happens when you pass a setup to `app.Setup` that does not implement `ISetup<TApplication>` (or one for a base type of it).
+If a setup implements none of the supported targets for the builder you call it on, `Add` throws an `InvalidOperationException` that names the setup type and the builder type. The same happens when you pass a setup to `app.Setups().Add` that does not implement `ISetup<TApplication>` (or one for a base type of it).
 
 ```csharp
 // MapEndpoints implements only ISetup<WebApplication>
-builder.Setup(new MapEndpoints());       // throws InvalidOperationException
+builder.Setups().Add<MapEndpoints>();    // throws InvalidOperationException
 ```
 
-Setups for the built app belong to `app.Setup`.
+Setups for the built app belong to `app.Setups().Add`.
 
 ## Trimming and Native AOT
 

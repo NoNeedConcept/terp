@@ -105,7 +105,7 @@ internal sealed class MapEndpoints : ISetup<WebApplication>
 
 ```csharp
 var app = builder.Build();
-app.Setup(new MapEndpoints());
+app.Setups().Add<MapEndpoints>();
 ```
 
 The context of a post-build setup comes from the app's services: `Configuration` and `Environment` are the resolved `IConfiguration` and `IHostEnvironment`.
@@ -123,10 +123,10 @@ internal sealed class DemoSetup
     public void Setup(IServiceCollection services, SetupContext context) { /* registrations */ }
 }
 
-builder.Setup<DemoSetup>();
+builder.Setups().Add<DemoSetup>();
 ```
 
-The targets run in the fixed order configuration, logging, services, metrics, builder. A class can also combine builder targets with `ISetup<WebApplication>`. `builder.Setup` runs the builder-side parts, and `app.Setup` runs the post-build part:
+The targets run in the fixed order configuration, logging, services, metrics, builder. A class can also combine builder targets with `ISetup<WebApplication>`. `builder.Setups().Add` runs the builder-side parts, and `app.Setups().Add` runs the post-build part:
 
 ```csharp
 internal sealed class ReportsSetup : ISetup<IServiceCollection>, ISetup<WebApplication>
@@ -138,27 +138,33 @@ internal sealed class ReportsSetup : ISetup<IServiceCollection>, ISetup<WebAppli
         app.MapGet("/reports", (ReportService reports) => reports.List());
 }
 
-builder.Setup<ReportsSetup>();
+builder.Setups().Add<ReportsSetup>();
 // ...
-app.Setup(new ReportsSetup());  // post-build: same instance or new one
+app.Setups().Add<ReportsSetup>();  // post-build: same instance or new one
 ```
 
 ::: info Two instances
 Each `Setup` call takes its own instance. Keep setups stateless, or pass the same instance to both calls.
 :::
 
-## Generic overloads
+## Generic and instance forms
 
-For a setup with a parameterless constructor you can name the type instead of creating it:
+`Add<TSetup>()` creates a setup with its parameterless constructor and applies it immediately. The chain preserves the concrete target type across all calls:
 
 ```csharp
-builder.Setup<OtherSetup>();                          // returns IHostApplicationBuilder
-builder.Setup<WebApplicationBuilder, KestrelSetup>(); // keeps the builder type
-app.Setup<MapEndpoints>();                            // returns IHost
-app.Setup<WebApplication, MapEndpoints>();            // keeps the app type
+builder.Setups()
+    .Add<LoggingSetup>()
+    .Add<KestrelSetup>();    // builder type stays WebApplicationBuilder
+
+app.Setups()
+    .Add<MapEndpoints>();    // app type stays WebApplication
 ```
 
-`Setup<TSetup>()` on a builder returns `IHostApplicationBuilder`, so the concrete builder type is lost for the next call in a chain. `Setup<TBuilder, TSetup>()` returns `TBuilder`. Use it, or `Setup(new ...)`, when a later setup is an `ISetup<WebApplicationBuilder>`.
+For a setup with constructor dependencies, pass an instance:
+
+```csharp
+builder.Setups().Add(new CustomSetup(connectionString));
+```
 
 ## Testing a setup
 

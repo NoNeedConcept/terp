@@ -35,13 +35,13 @@ internal sealed class ShopActorSystem : ActorSystemSetup
 Apply the setup like any other:
 
 ```csharp
-builder.Setup<ShopActorSystem>();
+builder.Setups().Add<ShopActorSystem>();
 ```
 
-The `Setup` method itself is not virtual. You customise only the name and `BuildSystem`. The service provider calls `BuildSystem` when it creates the actor system, not when you call `builder.Setup`, so it may resolve services that a later setup registers.
+The `Setup` method itself is not virtual. You customise only the name and `BuildSystem`. The service provider calls `BuildSystem` when it creates the actor system, not when you call `Add`, so it may resolve services that a later setup registers.
 
 ::: info Order
-`BuildSystem` runs when the service provider creates the actor system, not when you call `builder.Setup`. A service that `BuildSystem` resolves can be registered by a setup that you apply later.
+`BuildSystem` runs when the service provider creates the actor system, not when you call `Add`. A service that `BuildSystem` resolves can be registered by a setup that you apply later.
 :::
 
 ## One actor system per host
