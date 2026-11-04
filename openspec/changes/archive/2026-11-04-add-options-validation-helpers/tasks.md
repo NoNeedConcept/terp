@@ -40,5 +40,5 @@
 - [x] 7.1 `dotnet build src/Terp.slnx -p:ContinuousIntegrationBuild=true` passes without warnings
 - [x] 7.2 `dotnet test --solution Terp.slnx` (from `src/`) passes
 - [x] 7.3 `dotnet format Terp.slnx --verify-no-changes` passes
-- [ ] 7.4 Publish `Terp.Hosting.Example` with Native AOT and confirm 0 warnings (no new trim/AOT warnings from `Terp`) (blocked locally: native link step fails because `vswhere.exe` is not found; managed compile and ILC stage showed no warnings; rerun in CI or a VS developer shell)
-- [ ] 7.5 Commit with a Conventional Commit (`feat(terp): add ValidationFailures for options validators`), single-line message, only when the user asks for it
+- [x] 7.4 Publish `Terp.Hosting.Example` with Native AOT and confirm 0 warnings (no new trim/AOT warnings from `Terp`) (verified in CI: `extra-ci.yml` aot-publish on PR #22, 0 warnings; the local publish failed only at the native link step because `vswhere.exe` is missing)
+- [x] 7.5 Commit with a Conventional Commit (`feat(terp): add ValidationFailures for options validators`), single-line message, only when the user asks for it (committed as ff388b6)
