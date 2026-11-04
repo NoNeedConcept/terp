@@ -96,3 +96,4 @@ dotnet publish src/Terp.Hosting.Example -c Release -r win-x64
 
 - [Setups](/terp/setups) covers writing and testing setups.
 - [Startup gates](/terp/gates) covers readiness checks that run before the host reports started.
+- [Options with setups](/terp/options) covers registering options in a setup, Native AOT safe binding and `ValidationFailures` for validators.

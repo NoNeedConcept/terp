@@ -118,7 +118,8 @@ export default defineConfig({
         items: [
           { text: 'Overview', link: '/terp/' },
           { text: 'Setups', link: '/terp/setups' },
-          { text: 'Startup gates', link: '/terp/gates' }
+          { text: 'Startup gates', link: '/terp/gates' },
+          { text: 'Options', link: '/terp/options' }
         ]
       },
       {

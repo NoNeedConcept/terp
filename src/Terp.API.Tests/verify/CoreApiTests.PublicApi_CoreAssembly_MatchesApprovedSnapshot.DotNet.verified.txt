@@ -119,6 +119,18 @@ namespace Terp.Network
         public static int FindFreeLocalPort() { }
     }
 }
+namespace Terp.Options
+{
+    public sealed class ValidationFailures
+    {
+        public ValidationFailures(string? section = null) { }
+        public int Count { get; }
+        public string? Section { get; }
+        public void Add(string message) { }
+        public void Require(bool condition, string message) { }
+        public Microsoft.Extensions.Options.ValidateOptionsResult ToResult() { }
+    }
+}
 namespace Terp.Resilience
 {
     public static class Backoff

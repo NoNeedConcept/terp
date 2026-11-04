@@ -8,6 +8,7 @@
     <PackageVersion Include="Akka.Hosting" Version="[1.5.52,)" />
     <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="[10.0.0,)" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="[10.0.0,)" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="[10.0.0,)" />
     <!--- Testing and examples -->
     <PackageVersion Include="Akka.Hosting.TestKit" Version="1.5.73" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.14" />
