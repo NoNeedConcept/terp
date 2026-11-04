@@ -15,4 +15,18 @@
         <InternalsVisibleTo Include="Terp.Tests" />
     </ItemGroup>
 
+    <Target Name="TerpLogo" BeforeTargets="Build" Condition="'$(ContinuousIntegrationBuild)' != 'true'">
+        <Message Text=" " Importance="high"/>
+        <Message Text="                  /\" Importance="high"/>
+        <Message Text="                 /  \" Importance="high"/>
+        <Message Text="                /____\" Importance="high"/>
+        <Message Text="                | [] |" Importance="high"/>
+        <Message Text="           _.-'`------`'-._" Importance="high"/>
+        <Message Text="        .-'                '-." Importance="high"/>
+        <Message Text="     .-'                      '-." Importance="high"/>
+        <Message Text="~~~/______________________________\~~~" Importance="high"/>
+        <Message Text="                 terp" Importance="high"/>
+        <Message Text=" " Importance="high"/>
+    </Target>
+
 </Project>
