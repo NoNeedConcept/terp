@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.2.1](https://github.com/NoNeedConcept/terp/compare/v0.2.0...v0.2.1) (2026-11-04)
+
+
+### Features
+
+* **terp:** add ValidationFailures for options validators ([ff388b6](https://github.com/NoNeedConcept/terp/commit/ff388b6918665a9ea3aabcc09e55afec77683e2e))
+
+
+### Documentation
+
+* mark AOT verification and commit done in archived options change ([55230ff](https://github.com/NoNeedConcept/terp/commit/55230ff1ef4e3434c861b48122ec882ffbae50f6))
+* remove Migration.md, notes live in the consuming projects ([8e35145](https://github.com/NoNeedConcept/terp/commit/8e35145630c21aa039f18149ec0301a993ea2f14))
+* update README examples to SetupChain fluent API ([31380ab](https://github.com/NoNeedConcept/terp/commit/31380ab2593c5d07df6fc7de9de2c119d146030d))
+
 ## [0.2.0](https://github.com/NoNeedConcept/terp/compare/v0.1.1...v0.2.0) (2026-11-02)
 
 
