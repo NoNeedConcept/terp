@@ -154,6 +154,8 @@ Adopted from FunkArr and Njord; apply when writing actors in `Terp.Akka` or cons
   (use `-p:`, not `/p:`, in Git Bash).
 - `EnforceCodeStyleInBuild` is on, so code-style rules from `.editorconfig` (IDE*) fail the CI build too.
 - Test and example projects also generate the XML doc file (needed for IDE0005); CS1591 is silenced there in `.editorconfig`.
+- `.github/workflows/extra-ci.yml` publishes `Terp.Hosting.Example` with Native AOT on every pull request, so trim/AOT warnings in `Terp` fail CI.
+  The shared `dotnet-ci.yml` only builds, tests and formats, it does not run ILC. Locally this needs the MSVC toolchain (a VS developer shell on Windows).
 
 ## Release setup (one-time)
 
