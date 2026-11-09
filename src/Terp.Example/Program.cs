@@ -15,13 +15,13 @@ for (var step = 1; step <= 2; step++)
 {
     using (stepDuration.StartTimer(new KeyValuePair<string, object?>("step", step)))
     {
-        await Task.Delay(50);
+        await Task.Delay(50).ConfigureAwait(false);
     }
 }
 
 Console.WriteLine("TimeAsync: times an async operation into a histogram with outcome tag");
 var asyncDuration = meter.CreateHistogram<double>("demo.async.duration", "s");
-await asyncDuration.TimeAsync(async ct => await Task.Delay(50, ct), cancellationToken: CancellationToken.None);
+await asyncDuration.TimeAsync(async ct => await Task.Delay(50, ct).ConfigureAwait(false), cancellationToken: CancellationToken.None).ConfigureAwait(false);
 
 Console.WriteLine("PortFinder + TerpHttpMetricsHandler: the BCL HttpClient metric gets the tags api=demo, status_class=2xx");
 var port = PortFinder.FindFreeLocalPort();
@@ -31,17 +31,17 @@ server.Prefixes.Add(prefix);
 server.Start();
 var serving = Task.Run(async () =>
 {
-    var context = await server.GetContextAsync();
+    var context = await server.GetContextAsync().ConfigureAwait(false);
     context.Response.Close();
 });
 
 using (var client = new HttpClient(new TerpHttpMetricsHandler("demo") { InnerHandler = new SocketsHttpHandler() }))
 {
-    using var response = await client.GetAsync(prefix);
+    using var response = await client.GetAsync(prefix).ConfigureAwait(false);
     Console.WriteLine($"  GET {prefix} -> {(int)response.StatusCode}");
 }
 
-await serving;
+await serving.ConfigureAwait(false);
 server.Stop();
 
 Console.WriteLine("Backoff: the delay doubles per attempt up to maxDelay");

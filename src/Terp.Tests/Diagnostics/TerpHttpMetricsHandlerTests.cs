@@ -49,11 +49,11 @@ public sealed class TerpHttpMetricsHandlerTests
             {
                 var stream = client.GetStream();
                 var buffer = new byte[4096];
-                var read = await stream.ReadAsync(buffer);
+                var read = await stream.ReadAsync(buffer).ConfigureAwait(false);
                 var request = Encoding.ASCII.GetString(buffer, 0, read);
                 var status = request.Contains("/fail", StringComparison.Ordinal) ? "500 Internal Server Error" : "200 OK";
                 var response = $"HTTP/1.1 {status}\r\nContent-Length: 2\r\nConnection: close\r\n\r\nhi";
-                await stream.WriteAsync(Encoding.ASCII.GetBytes(response));
+                await stream.WriteAsync(Encoding.ASCII.GetBytes(response)).ConfigureAwait(false);
             }
         }
 
@@ -63,7 +63,7 @@ public sealed class TerpHttpMetricsHandlerTests
             {
                 while (!_cts.IsCancellationRequested)
                 {
-                    var client = await _listener.AcceptTcpClientAsync(_cts.Token);
+                    var client = await _listener.AcceptTcpClientAsync(_cts.Token).ConfigureAwait(false);
                     _ = Task.Run(() => HandleAsync(client));
                 }
             }

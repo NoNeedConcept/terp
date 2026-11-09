@@ -183,7 +183,7 @@ public sealed class EntityRegionActorTests : TestKit
         await AwaitAssertAsync(async () =>
         {
             region.Tell(new TestCommand("x", "after-crash"), TestActor);
-            var response = await ExpectMsgAsync<EchoResponse>(TimeSpan.FromMilliseconds(300), cancellationToken: ct);
+            var response = await ExpectMsgAsync<EchoResponse>(TimeSpan.FromMilliseconds(300), cancellationToken: ct).ConfigureAwait(false);
             Assert.Equal("after-crash", response.Payload);
         }, cancellationToken: ct);
     }
@@ -215,7 +215,7 @@ public sealed class EntityRegionActorTests : TestKit
                 await AwaitAssertAsync(async () =>
                 {
                     region.Tell(new TestCommand("y", "alive"), TestActor);
-                    await ExpectMsgAsync<EchoResponse>(TimeSpan.FromMilliseconds(300), cancellationToken: ct);
+                    await ExpectMsgAsync<EchoResponse>(TimeSpan.FromMilliseconds(300), cancellationToken: ct).ConfigureAwait(false);
                 }, cancellationToken: ct);
             }
         }
@@ -224,7 +224,7 @@ public sealed class EntityRegionActorTests : TestKit
         {
             region.Tell(new TestCommand("y", "should-be-dead"), TestActor);
             await deadLetterProbe.ExpectMsgAsync<global::Akka.Event.DeadLetter>(
-                TimeSpan.FromMilliseconds(300), cancellationToken: ct);
+                TimeSpan.FromMilliseconds(300), cancellationToken: ct).ConfigureAwait(false);
         }, cancellationToken: ct);
     }
 

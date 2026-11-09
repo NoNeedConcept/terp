@@ -57,7 +57,7 @@ public sealed class StreamSupervisionExtensionsTests : TestKit
 
     private async Task<IReadOnlyList<int>> RunAsync<TMat>(Source<int, TMat> source) =>
         await source.RunWith(Sink.Seq<int>(), Sys.Materializer())
-            .WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
+            .WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken).ConfigureAwait(false);
 
     [Fact]
     public async Task ResumeOnError_Source_ContinuesAfterException()

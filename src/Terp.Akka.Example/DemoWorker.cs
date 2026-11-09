@@ -10,8 +10,8 @@ internal sealed class DemoWorker(ActorSystem system, IActorRegistry registry, IH
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var greeter = await registry.GetAsync<GreeterActor>(stoppingToken);   // waits until the actor system has started
-        var reply = await greeter.Ask<Done>(new Greet("Terp"), TimeSpan.FromSeconds(5), stoppingToken);
+        var greeter = await registry.GetAsync<GreeterActor>(stoppingToken).ConfigureAwait(false);   // waits until the actor system has started
+        var reply = await greeter.Ask<Done>(new Greet("Terp"), TimeSpan.FromSeconds(5), stoppingToken).ConfigureAwait(false);
         logger.LogInformation("Greeter says: {Reply}", reply.Result);
 
         // The backoff supervisor restarts the failing child with growing delays (100ms, 200ms, 400ms, ...).
@@ -25,7 +25,7 @@ internal sealed class DemoWorker(ActorSystem system, IActorRegistry registry, IH
         while (!result.Task.IsCompleted && !timeout.IsCancellationRequested)
         {
             flaky.Tell(new Run());
-            await Task.WhenAny(result.Task, Task.Delay(300, timeout.Token));
+            await Task.WhenAny(result.Task, Task.Delay(300, timeout.Token)).ConfigureAwait(false);
         }
 
         logger.LogInformation("Flaky actor {Result}", result.Task.IsCompleted ? result.Task.Result : "never succeeded");

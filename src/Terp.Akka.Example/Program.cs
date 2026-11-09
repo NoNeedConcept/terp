@@ -19,4 +19,4 @@ using var host = builder.Build();
 host.Services.GetRequiredService<IHostApplicationLifetime>().ApplicationStopping
     .Register(() => Console.WriteLine("Stopping: the actor system shuts down with the host"));
 
-await host.RunAsync();
+await host.RunAsync().ConfigureAwait(false);

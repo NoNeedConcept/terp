@@ -12,7 +12,7 @@ public sealed class AsyncLockTests
         var task = sut.AcquireAsync(TestContext.Current.CancellationToken);
 
         Assert.True(task.IsCompleted);
-        var scope = await task;
+        var scope = await task.ConfigureAwait(true);
         scope.Dispose();
     }
 
@@ -46,7 +46,7 @@ public sealed class AsyncLockTests
         await cts.CancelAsync();
 
         await Assert.ThrowsAsync<OperationCanceledException>(async () =>
-            await secondTask.AsTask().WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken));
+            await secondTask.AsTask().WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken).ConfigureAwait(false));
 
         first.Dispose();
     }
@@ -58,7 +58,7 @@ public sealed class AsyncLockTests
         sut.Dispose();
 
         await Assert.ThrowsAsync<ObjectDisposedException>(async () =>
-            await sut.AcquireAsync(TestContext.Current.CancellationToken));
+            await sut.AcquireAsync(TestContext.Current.CancellationToken).ConfigureAwait(false));
     }
 
     [Fact(Timeout = 5000)]
@@ -86,7 +86,7 @@ public sealed class AsyncLockTests
 
         var tasks = Enumerable.Range(0, 10).Select(async _ =>
         {
-            using var scope = await sut.AcquireAsync(ct);
+            using var scope = await sut.AcquireAsync(ct).ConfigureAwait(false);
             var current = Interlocked.Increment(ref counter);
             if (current > maxConcurrent)
             {
