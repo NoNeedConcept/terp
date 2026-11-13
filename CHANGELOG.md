@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/NoNeedConcept/terp/compare/v0.2.1...v0.2.2) (2026-11-13)
+
+
+### Features
+
+* add ci-setup and ci-post-build hooks for AOT verification ([953255e](https://github.com/NoNeedConcept/terp/commit/953255e83d71e17bdaf050439f8975e62eff8bdf))
+
 ## [0.2.1](https://github.com/NoNeedConcept/terp/compare/v0.2.0...v0.2.1) (2026-11-04)
 
 
