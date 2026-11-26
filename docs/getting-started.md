@@ -93,4 +93,4 @@ Terp ships the interface only. It contains no repository, generator or lookup th
 - [Diagnostics](/diagnostics/) has timers, job metrics and the HTTP client metrics handler.
 - [Akka](/akka/) describes `Terp.Akka`.
 
-The repository contains runnable demo apps: `src/Terp.Example` (diagnostics, backoff, port finder, date helpers), `src/Terp.Hosting.Example` (setups for all targets, a gate, Native AOT) and `src/Terp.Akka.Example` (actor system, backoff supervisor).
+The repository contains runnable demo apps: `src/Terp.Example` (all Terp features: setups, startup gates, diagnostics, resilience, network, threading, Native AOT) and `src/Terp.Akka.Example` (actor system, backoff supervisor).

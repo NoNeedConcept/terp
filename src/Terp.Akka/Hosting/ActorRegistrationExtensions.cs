@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Akka.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,7 +16,7 @@ public static class ActorRegistrationExtensions
     /// <param name="services">The service collection.</param>
     /// <returns>The service collection, for chaining.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="services"/> is <see langword="null"/>.</exception>
-    public static IServiceCollection AddActorRegistration<T>(this IServiceCollection services)
+    public static IServiceCollection AddActorRegistration<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(this IServiceCollection services)
         where T : class, IActorRegistration, new()
     {
         ArgumentNullException.ThrowIfNull(services);

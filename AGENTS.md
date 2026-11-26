@@ -15,7 +15,7 @@ src/
   Terp.Akka/                 # Akka.NET helpers on Akka.Hosting (NuGet package; subfolders Hosting/ and Entities/ map to namespaces)
   Terp.Tests/ Terp.Akka.Tests/  # Unit tests
   Terp.API.Tests/            # Public-API snapshot tests (Verify + PublicApiGenerator)
-  Terp.Example/ Terp.Hosting.Example/ Terp.Akka.Example/  # Runnable demo apps (IsPackable=false, not shipped); Terp.Hosting.Example requires Native AOT (PublishAot)
+  Terp.Example/ Terp.Akka.Example/  # Runnable demo apps (IsPackable=false, not shipped); Terp.Example is the Native AOT proof (PublishAot)
 ```
 
 Namespaces: `Terp` has `Terp.Diagnostics` (metrics helpers: `TimerScope`, `TimeAsync`/`HistogramTimerExtensions`, `TerpHttpMetricsHandler`), `Terp.Resilience`, `Terp.Network`,
@@ -70,7 +70,7 @@ Always use the solution file, never individual csproj files.
   There are no public phase numbers, no discovery (`SetupAll*`, source generator) and no `[SetupOrder]`/`[SetupIgnore]`; setups are listed explicitly. Discovery, a generator and
   the target registry (`AddSetupTarget`) exist on branch `archive/generator` and can return if a real need appears.
 - Dispatch is pure pattern matching (`setup is ISetup<IServiceCollection>` ...; the builder target is `ISetup<TBuilder>` with the static receiver type, so contravariance makes
-  `ISetup<IHostApplicationBuilder>` fit every builder). It is reflection-free and trim/AOT-safe; do not add reflection. `Terp.Hosting.Example` publishes with Native AOT and 0 warnings to prove it.
+  `ISetup<IHostApplicationBuilder>` fit every builder). It is reflection-free and trim/AOT-safe; do not add reflection. `Terp.Example` publishes with Native AOT and 0 warnings to prove it.
   A setup matching no target throws `InvalidOperationException`; a mismatching extra builder target next to a matching one cannot be detected without reflection and is ignored (tested).
 - Startup gates (`Terp.Hosting.Gates`): `IStartupGate`, `AddStartupGate<T>()`, `AddStartupGate(name, check)`; one internal hosted service polls the open gates in `StartingAsync` with `Terp.Resilience.Backoff`
   and fixed constants (1 s initial, 30 s max, 10 s per check). No options.
@@ -154,7 +154,7 @@ Adopted from FunkArr and Njord; apply when writing actors in `Terp.Akka` or cons
   (use `-p:`, not `/p:`, in Git Bash).
 - `EnforceCodeStyleInBuild` is on, so code-style rules from `.editorconfig` (IDE*) fail the CI build too.
 - Test and example projects also generate the XML doc file (needed for IDE0005); CS1591 is silenced there in `.editorconfig`.
-- `.github/workflows/extra-ci.yml` publishes `Terp.Hosting.Example` with Native AOT on every pull request, so trim/AOT warnings in `Terp` fail CI.
+- `.github/workflows/extra-ci.yml` publishes `Terp.Example` with Native AOT on every pull request, so trim/AOT warnings in `Terp` fail CI.
   The shared `dotnet-ci.yml` only builds, tests and formats, it does not run ILC. Locally this needs the MSVC toolchain (a VS developer shell on Windows).
 
 ## Release setup (one-time)

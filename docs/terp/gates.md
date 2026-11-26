@@ -106,7 +106,7 @@ The logger is optional. Without logging services the gates still run and nothing
 
 ## Example
 
-`src/Terp.Hosting.Example` registers a gate that needs two attempts. The worker starts only after the second check:
+`src/Terp.Example` registers a gate that needs two attempts. The worker starts only after the second check:
 
 ```csharp
 var gate = new WarmupGate(requiredAttempts: 2);

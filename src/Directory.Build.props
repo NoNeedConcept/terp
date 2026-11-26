@@ -6,8 +6,6 @@
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-        <IsAotCompatible>true</IsAotCompatible>
-        <IsTrimmable>true</IsTrimmable>
     </PropertyGroup>
 
     <PropertyGroup>

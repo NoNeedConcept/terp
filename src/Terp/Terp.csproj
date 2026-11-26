@@ -3,6 +3,8 @@
     <PropertyGroup>
         <Description>Foundation helpers for .NET apps: host setups, startup gates, diagnostics, resilience, network and date helpers.</Description>
         <PackageTags>terp;helpers;hosting;setup;startup;diagnostics;resilience</PackageTags>
+        <IsAotCompatible>true</IsAotCompatible>
+        <IsTrimmable>true</IsTrimmable>
     </PropertyGroup>
 
     <ItemGroup>

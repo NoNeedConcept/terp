@@ -86,10 +86,10 @@ Setups for the built app belong to `app.Setups().Add`.
 
 ## Trimming and Native AOT
 
-Dispatch is plain pattern matching (`setup is ISetup<IServiceCollection>` and so on). Terp uses no reflection and no assembly scanning, so explicit setups are safe for trimming and Native AOT. The repository publishes `src/Terp.Hosting.Example` with Native AOT without trim or AOT warnings.
+Dispatch is plain pattern matching (`setup is ISetup<IServiceCollection>` and so on). Terp uses no reflection and no assembly scanning, so explicit setups are safe for trimming and Native AOT. The repository publishes `src/Terp.Example` with Native AOT without trim or AOT warnings.
 
 ```powershell
-dotnet publish src/Terp.Hosting.Example -c Release -r win-x64
+dotnet publish src/Terp.Example -c Release -r win-x64
 ```
 
 ## Related pages

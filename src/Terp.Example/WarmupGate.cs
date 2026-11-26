@@ -1,6 +1,5 @@
-namespace Terp.Hosting.Example;
+namespace Terp.Example;
 
-/// <summary>Pretends a dependency needs a few attempts to become ready.</summary>
 internal sealed class WarmupGate(int requiredAttempts)
 {
     public int Attempts { get; private set; }

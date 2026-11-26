@@ -1,6 +1,5 @@
-namespace Terp.Hosting.Example;
+namespace Terp.Example;
 
-/// <summary>Records which target was set up when; setups run before any container exists, so the trace is static.</summary>
 internal static class SetupTrace
 {
     private static readonly List<string> _entries = [];

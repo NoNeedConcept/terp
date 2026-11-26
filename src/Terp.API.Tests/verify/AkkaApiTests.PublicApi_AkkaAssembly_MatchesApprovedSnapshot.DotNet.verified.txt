@@ -98,7 +98,7 @@ namespace Terp.Akka.Hosting
 {
     public static class ActorRegistrationExtensions
     {
-        public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddActorRegistration<T>(this Microsoft.Extensions.DependencyInjection.IServiceCollection services)
+        public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddActorRegistration<[System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors)]  T>(this Microsoft.Extensions.DependencyInjection.IServiceCollection services)
             where T :  class, Terp.Akka.Hosting.IActorRegistration, new () { }
         public static Akka.Hosting.AkkaConfigurationBuilder ApplyRegistrations(this Akka.Hosting.AkkaConfigurationBuilder builder, System.IServiceProvider provider) { }
     }

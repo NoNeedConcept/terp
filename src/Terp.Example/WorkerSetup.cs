@@ -1,8 +1,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Terp.Hosting;
 using Terp.Hosting.Gates;
 
-namespace Terp.Hosting.Example;
+namespace Terp.Example;
 
 internal sealed class WorkerSetup : ISetup<IServiceCollection>
 {

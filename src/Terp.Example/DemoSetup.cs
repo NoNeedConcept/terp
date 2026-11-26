@@ -3,10 +3,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.Metrics;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Terp.Hosting;
 
-namespace Terp.Hosting.Example;
+namespace Terp.Example;
 
-/// <summary>One setup for several targets; <c>Setup(builder)</c> runs them in the fixed order configuration, logging, services, metrics, builder.</summary>
 internal sealed class DemoSetup
     : ISetup<IConfigurationManager>, ISetup<ILoggingBuilder>, ISetup<IServiceCollection>, ISetup<IMetricsBuilder>, ISetup<IHostApplicationBuilder>
 {
@@ -38,6 +38,7 @@ internal sealed class DemoSetup
         SetupTrace.Add(nameof(IMetricsBuilder));
         metrics.AddListener(new ConsoleMetricsListener());
         metrics.EnableMetrics(DemoWorker.MeterName);
+        metrics.EnableMetrics("System.Net.Http");
     }
 
     public void Setup(IHostApplicationBuilder builder, SetupContext context)

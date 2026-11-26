@@ -120,8 +120,8 @@ For builder chains, `SetupContext` SHALL be constructed from `builder.Configurat
 
 `SetupChain<TTarget>` and all dispatch logic SHALL remain reflection-free. The implementation SHALL use only `is` pattern matching for type dispatch. No `Type.GetInterfaces()`, `Activator.CreateInstance`, or other reflection APIs.
 
-#### Scenario: Terp.Hosting.Example publishes with AOT
-- **WHEN** `Terp.Hosting.Example` is published with `PublishAot` and migrated to the new API
+#### Scenario: Terp.Example publishes with AOT
+- **WHEN** `Terp.Example` is published with `PublishAot`
 - **THEN** it compiles with 0 trim/AOT warnings
 
 ### Requirement: Removal of Setup extension methods

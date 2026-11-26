@@ -2,7 +2,6 @@
   <Folder Name="/Examples/">
     <Project Path="Terp.Akka.Example/Terp.Akka.Example.csproj" />
     <Project Path="Terp.Example/Terp.Example.csproj" />
-    <Project Path="Terp.Hosting.Example/Terp.Hosting.Example.csproj" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path="Directory.Build.props" />

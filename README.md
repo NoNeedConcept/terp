@@ -98,12 +98,11 @@ The demo apps need no external services and exit on their own.
 
 | Project | Shows |
 |---------|-------|
-| [`Terp.Example`](https://github.com/NoNeedConcept/terp/tree/main/src/Terp.Example) | `TimerScope`, `TerpHttpMetricsHandler`, `Backoff`, `PortFinder`, `DateTimeExtensions` |
-| [`Terp.Hosting.Example`](https://github.com/NoNeedConcept/terp/tree/main/src/Terp.Hosting.Example) | Setups for every target, startup gate, Native AOT publish |
+| [`Terp.Example`](https://github.com/NoNeedConcept/terp/tree/main/src/Terp.Example) | All Terp features: setups, startup gates, diagnostics, resilience, network, threading, Native AOT proof |
 | [`Terp.Akka.Example`](https://github.com/NoNeedConcept/terp/tree/main/src/Terp.Akka.Example) | `ActorSystemSetup`, actor registry, `BackoffOnFailure` |
 
 ```bash
-dotnet run --project src/Terp.Hosting.Example
+dotnet run --project src/Terp.Example
 ```
 
 ## Documentation
