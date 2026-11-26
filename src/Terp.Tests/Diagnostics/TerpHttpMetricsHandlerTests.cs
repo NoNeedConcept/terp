@@ -69,6 +69,8 @@ public sealed class TerpHttpMetricsHandlerTests
             }
             catch (Exception ex) when (ex is OperationCanceledException or ObjectDisposedException or SocketException)
             {
+                // Expected during test teardown when the listener is disposed or cancelled.
+                _ = ex;
             }
         }
     }
