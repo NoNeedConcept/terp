@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.2.2](https://github.com/NoNeedConcept/terp/compare/v0.2.1...v0.2.2) (2026-11-26)
+
+
+### Features
+
+* add ci-setup and ci-post-build hooks for AOT verification ([953255e](https://github.com/NoNeedConcept/terp/commit/953255e83d71e17bdaf050439f8975e62eff8bdf))
+* **ci:** add slopwatch analysis with baseline ([fab73a8](https://github.com/NoNeedConcept/terp/commit/fab73a8e732e28fc7fe34130a048bf7175590db2))
+* declare IsAotCompatible and IsTrimmable for all packages ([e0e4491](https://github.com/NoNeedConcept/terp/commit/e0e4491d5bd0c41df43f2044d18bdf63992bc5ad))
+
+
+### Bug Fixes
+
+* **ci:** remove obsolete trivy-config input from security workflow ([ca15afa](https://github.com/NoNeedConcept/terp/commit/ca15afab0a1f9ff760bebe53541871f98156cb26))
+* **ci:** update AOT publish path to consolidated Terp.Example ([12273e1](https://github.com/NoNeedConcept/terp/commit/12273e1264782972525bef56c37df88d8470e37b))
+
+
+### Refactoring
+
+* **ci:** remove extra-ci.yml, AOT verification handled by ci-post-build hook ([addd6bd](https://github.com/NoNeedConcept/terp/commit/addd6bd8be665af9bde17f9893d65fd836bc9f24))
+* consolidate AOT proof into single Terp.Example ([2d59bce](https://github.com/NoNeedConcept/terp/commit/2d59bce4843b5621449aaa788e0f40029e4b2819))
+
 ## [0.2.1](https://github.com/NoNeedConcept/terp/compare/v0.2.0...v0.2.1) (2026-11-04)
 
 
